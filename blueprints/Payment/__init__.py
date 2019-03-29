@@ -3,22 +3,21 @@ from blueprints import db
 from flask_restful import fields
 import datetime
 
-
-class Topups(db.Model):
-    __tablename__ = "topups"
+class Payments(db.Model):
+    __tablename__ = "payments"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
-    id_murid = db.Column(db.Integer)
+    id_booking = db.Column(db.Integer)
     nominal = db.Column(db.Integer)
-    metode_pembayaran = db.Column(db.String(50)) # Bank / Indo / Alfa / Kantor Pos
-    status = db.Column(db.String(50)) # Sukses / Wait payment
+    total_nominal = db.Column(db.Integer)
+    status = db.Column(db.String(50))
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(), index=True)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), index=True)
 
     respon_fields = {
         'id': fields.Integer,
-        'id_murid' : fields.Integer,
+        'id_booking' : fields.Integer,
         'nominal' : fields.Integer,
-        'metode_pembayaran' : fields.String,
+        'total_nominal' : fields.Integer,
         'status' : fields.String,
         'created_at' : fields.DateTime,
         'updated_at' : fields.DateTime
@@ -28,15 +27,14 @@ class Topups(db.Model):
         'tipe' : fields.String
     }
 
-    def __init__(self,id,id_murid,nominal,metode_pembayaran,status,created_at,updated_at):
+    def __init__(self,id,id_booking,nominal,total_nominal,created_at,updated_at):
         self.id = id
-        self.id_murid = id_murid
+        self.id_booking = id_booking
         self.nominal = nominal
-        self.metode_pembayaran = metode_pembayaran
-        self.status = status
+        self.total_nominal = total_nominal
         self.created_at = created_at
         self.updated_at = updated_at
     
     #return repr harus string
     def __repr__(self):
-        return '<Topups %r>' % self.id
+        return '<Payments %r>' % self.id
