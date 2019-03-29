@@ -117,19 +117,13 @@ class TopupResource(Resource):
             return {'message':'UNAUTHORIZED'},404, { 'Content-Type': 'application/json' }
         qry_topup = Topups.query.get(id)
         topup = marshal(qry_topup, Topups.respon_fields)
-        parser = reqparse.RequestParser()
-        parser.add_argument('id_murid', location='json', default=topup["id_murid"])
-        parser.add_argument('nominal', location='json', default=topup["nominal"])
-        parser.add_argument('metode_pembayaran', location='json', default=topup["metode_pembayaran"])
-        parser.add_argument('created_at', location='json', default=topup["created_at"])
-        args = parser.parse_args()
 
         if qry_topup is not None:
-            qry_topup.id_murid = args['id_murid']
-            qry_topup.nominal = args['nominal']
-            qry_topup.metode_pembayaran = args['metode_pembayaran']
+            qry_topup.id_murid = topup['id_murid']
+            qry_topup.nominal = topup['nominal']
+            qry_topup.metode_pembayaran = topup['metode_pembayaran']
             qry_topup.status = 'Deleted'
-            qry_topup.created_at = args['created_at']
+            qry_topup.created_at = topup['created_at']
             qry_topup.updated_at = datetime.now()
             # db.session.delete(qry)
             db.session.commit()
