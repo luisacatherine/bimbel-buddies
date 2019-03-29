@@ -17,7 +17,7 @@ CORS(app)
 # @app.route('/')
 # def index():
 #     return render_template('index.html')
-# local
+# ini masih database di local
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://azril:Azril_28081995@172.11.111.18/rest_portofolio'
 # server
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://azril:azril28081995@172.31.20.239/rest_portofolio'
@@ -70,23 +70,5 @@ app.register_blueprint(bp_auth, url_prefix='/login')
 
 from blueprints.users.resources import bp_admin
 app.register_blueprint(bp_admin, url_prefix='/api/users')
-
-from blueprints.users_register.resources import bp_user
-app.register_blueprint(bp_user, url_prefix='/api/users/register')
-
-from blueprints.users_detail.resources import bp_user_me
-app.register_blueprint(bp_user_me, url_prefix='/api/users/me')
-
-from blueprints.item.resources import bp_items
-app.register_blueprint(bp_items, url_prefix='/api/users/items')
-
-from blueprints.public.resources import bp_public
-app.register_blueprint(bp_public, url_prefix='/api/public/items')
-
-from blueprints.cart.resources import bp_transaction
-app.register_blueprint(bp_transaction, url_prefix='/api/customer/transaction')
-
-from blueprints.cart_detail.resources import bp_cartdetail
-app.register_blueprint(bp_cartdetail, url_prefix='/api/customer/cart/detail')
 
 db.create_all()

@@ -6,3 +6,5 @@ flask-script
 pymysql
 flask-jwt-extended
 flask-cors
+requests
+geopy
