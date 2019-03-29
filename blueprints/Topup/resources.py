@@ -110,6 +110,7 @@ class TopupResource(Resource):
             return {'status': 'OK','message':"success verifikasi topup",'data':marshal(qry_topup, Topups.respon_fields)},200, { 'Content-Type': 'application/json' }        
         return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
 
+    # ===== Delete topup =====
     @jwt_required
     def delete(self,id):
         tipe = get_jwt_claims()['tipe']
