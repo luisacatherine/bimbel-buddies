@@ -1,81 +1,86 @@
-from flask import Flask, request
+# app.py
+from flask import Flask, request, render_template
+from flask_restful import Resource, Api, reqparse
+from time import strftime 
+from datetime import timedelta
 import json, logging
-from time import strftime
-from flask_restful import Resource, Api, reqparse, abort
 from logging.handlers import RotatingFileHandler
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from flask_jwt_extended import JWTManager
-from datetime import timedelta
 from flask_cors import CORS
 
+#request.status.code
 app = Flask(__name__)
 CORS(app)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://musica:Alta2019#@musica.cbdr6ksottly.ap-southeast-1.rds.amazonaws.com:3306/musica'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://alterra:Alta2019#@172.31.21.6:3306/dbmusica'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@0.0.0.0:3306/musica_project'
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
+# local
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://azril:Azril_28081995@172.11.111.18/rest_portofolio'
+# server
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://azril:azril28081995@172.31.20.239/rest_portofolio'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'musicaAdmin'
+app.config['JWT_SECRET_KEY'] = 'alterra'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)
 
 jwt = JWTManager(app)
-
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-manager = Manager(app)
-manager.add_command('db', MigrateCommand)
-
-# catch 404 default error
-api = Api(app, catch_all_404s=True)
-
-# middlewares
-@app.after_request
-def after_request(response):
-    if request.method == 'GET':
-        app.logger.warning("REQUEST LOG\t%s %s", json.dumps({'request': request.args.to_dict(
-        ), 'response': json.loads(response.data.decode('utf-8'))}), response.status_code)
-    else:
-        app.logger.warning("REQUEST LOG\t%s %s", json.dumps({'request': request.get_json(
-        ), 'response': json.loads(response.data.decode('utf-8'))}), response.status_code)
-    return response
 
 @jwt.user_claims_loader
 def add_claims_to_access_token(identity):
     return identity
 
-# call blueprints
-# from blueprints.client.resources import bp_client
-# from blueprints.user.resources import bp_user
-# from blueprints.auth import bp_auth
-# from blueprints.seller.resources import bp_seller
-# from blueprints.items.resources import bp_item
-# from blueprints.transaction_details.resources import bp_transdetail
-# from blueprints.transaction.resources import bp_transaction
-# from blueprints.discussion.resources import bp_diskusi
-# from blueprints.category.resources import bp_category
-# from blueprints.ongkir import bp_ongkir
-# from blueprints.seller.public import bp_seller_public
-# from blueprints.user.public import bp_user_public
-# from blueprints.location.resources import bp_provinsi, bp_kota
-# from blueprints.status.resources import bp_status
+db = SQLAlchemy(app)
+migrate = Migrate(app,db)
 
+manager = Manager(app)
+manager.add_command('db',MigrateCommand)
 
-# app.register_blueprint(bp_client, url_prefix='/client')
-# app.register_blueprint(bp_user, url_prefix='/user')
-# app.register_blueprint(bp_auth, url_prefix='/login')
-# app.register_blueprint(bp_seller, url_prefix='/seller')
-# app.register_blueprint(bp_item, url_prefix='/item')
-# app.register_blueprint(bp_transdetail, url_prefix='/transdetail')
-# app.register_blueprint(bp_transaction, url_prefix='/transaction')
-# app.register_blueprint(bp_diskusi, url_prefix='/diskusi')
-# app.register_blueprint(bp_category, url_prefix='/category')
-# app.register_blueprint(bp_ongkir, url_prefix='/ongkir')
-# app.register_blueprint(bp_seller_public, url_prefix='/public/seller')
-# app.register_blueprint(bp_user_public, url_prefix='/public/user')
-# app.register_blueprint(bp_provinsi, url_prefix='/provinsi')
-# app.register_blueprint(bp_kota, url_prefix='/kota')
-# app.register_blueprint(bp_status, url_prefix='/status')
+@app.after_request
+def after_request(response):
+    if request.method=='GET':
+        app.logger.warning("REQUEST_LOG\t%s %s", json.dumps({ 'request': request.args.to_dict(), 'response': json.loads(response.data.decode('utf-8')) }),request.method)
+    else:
+        app.logger.warning("REQUEST_LOG\t%s", json.dumps({ 'request': request.get_json(), 'response': json.loads(response.data.decode('utf-8')) }))
+    return response
+
+# initiate flask-restful instance
+api = Api(app, catch_all_404s=True)
+
+    # db = get_db()
+    # cur = db.execute('select title, text from entries order by id desc')
+    # entries = cur.fetchall()
+@app.route('/')    
+def index():
+    return "<h1> Hello : This main route </h1>"
+
+#from namafolder blueprints.namafolder resources.file.py resources
+
+from blueprints.auth import bp_auth
+app.register_blueprint(bp_auth, url_prefix='/api/users/login')
+
+from blueprints.users.resources import bp_admin
+app.register_blueprint(bp_admin, url_prefix='/api/users')
+
+from blueprints.users_register.resources import bp_user
+app.register_blueprint(bp_user, url_prefix='/api/users/register')
+
+from blueprints.users_detail.resources import bp_user_me
+app.register_blueprint(bp_user_me, url_prefix='/api/users/me')
+
+from blueprints.item.resources import bp_items
+app.register_blueprint(bp_items, url_prefix='/api/users/items')
+
+from blueprints.public.resources import bp_public
+app.register_blueprint(bp_public, url_prefix='/api/public/items')
+
+from blueprints.cart.resources import bp_transaction
+app.register_blueprint(bp_transaction, url_prefix='/api/customer/transaction')
+
+from blueprints.cart_detail.resources import bp_cartdetail
+app.register_blueprint(bp_cartdetail, url_prefix='/api/customer/cart/detail')
 
 db.create_all()
