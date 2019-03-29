@@ -3,8 +3,6 @@ from blueprints import db
 from flask_restful import fields
 import datetime
 
-#Client CLASS
-
 class Reviews(db.Model):
     __tablename__ = "reviews"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
