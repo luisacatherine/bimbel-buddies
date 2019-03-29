@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://musica:Alta2019#@musica.cbdr6ksottly.ap-southeast-1.rds.amazonaws.com:3306/musica'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://alterra:Alta2019#@172.31.21.6:3306/dbmusica'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@0.0.0.0:3306/musica_project'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@0.0.0.0:3306/dbbimbel'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'musicaAdmin'
@@ -46,6 +46,8 @@ def add_claims_to_access_token(identity):
     return identity
 
 # call blueprints
+from blueprints.harga.resources import bp_harga
+from blueprints.booking.resources import bp_booking
 # from blueprints.client.resources import bp_client
 # from blueprints.user.resources import bp_user
 # from blueprints.auth import bp_auth
@@ -62,6 +64,8 @@ def add_claims_to_access_token(identity):
 # from blueprints.status.resources import bp_status
 
 
+app.register_blueprint(bp_harga, url_prefix='/harga')
+app.register_blueprint(bp_booking, url_prefix='/booking')
 # app.register_blueprint(bp_client, url_prefix='/client')
 # app.register_blueprint(bp_user, url_prefix='/user')
 # app.register_blueprint(bp_auth, url_prefix='/login')
