@@ -59,8 +59,14 @@ def index():
 
 #from namafolder blueprints.namafolder resources.file.py resources
 
+from blueprints.Client.resources import bp_clieent
+app.register_blueprint(bp_clieent, url_prefix='/client')
+
+from blueprints.tentor.resources import bp_tentor
+app.register_blueprint(bp_tentor, url_prefix='/tentor')
+
 from blueprints.auth import bp_auth
-app.register_blueprint(bp_auth, url_prefix='/api/users/login')
+app.register_blueprint(bp_auth, url_prefix='/login')
 
 from blueprints.users.resources import bp_admin
 app.register_blueprint(bp_admin, url_prefix='/api/users')
