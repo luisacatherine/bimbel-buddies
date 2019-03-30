@@ -7,4 +7,5 @@ pymysql
 flask-jwt-extended
 flask-cors
 requests
+passlib
 geopy

@@ -14,14 +14,9 @@ from flask_cors import CORS
 #request.status.code
 app = Flask(__name__)
 CORS(app)
-# @app.route('/')
-# def index():
-#     return render_template('index.html')
-# ini masih database di local
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@0.0.0.0:3306/dbbimbel'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://azril:Azril_28081995@172.11.111.18/rest_portofolio'
-# server
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://azril:azril28081995@172.31.20.239/rest_portofolio'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 
 app.config['JWT_SECRET_KEY'] = 'alterra'
@@ -62,13 +57,17 @@ def index():
 from blueprints.Client.resources import bp_clieent
 app.register_blueprint(bp_clieent, url_prefix='/client')
 
+# call blueprints
+from blueprints.harga.resources import bp_harga
+from blueprints.booking.resources import bp_booking
 from blueprints.tentor.resources import bp_tentor
-app.register_blueprint(bp_tentor, url_prefix='/tentor')
-
 from blueprints.auth import bp_auth
-app.register_blueprint(bp_auth, url_prefix='/login')
-
 from blueprints.users.resources import bp_admin
+
+app.register_blueprint(bp_tentor, url_prefix='/tentor')
+app.register_blueprint(bp_auth, url_prefix='/login')
+app.register_blueprint(bp_harga, url_prefix='/harga')
+app.register_blueprint(bp_booking, url_prefix='/booking')
 app.register_blueprint(bp_admin, url_prefix='/api/users')
 
 db.create_all()
