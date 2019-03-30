@@ -8,6 +8,7 @@ from sqlalchemy import Date, cast
 from flask_jwt_extended import get_jwt_claims, jwt_required
 from datetime import datetime, date, timedelta
 import requests
+from geopy.distance import great_circle
 
 bp_booking = Blueprint('booking', __name__)
 api = Api(bp_booking)
@@ -52,7 +53,6 @@ class BookingResource(Resource):
             for row in qry.limit(args['rp']).offset(offset).all():
                 rows.append(marshal(row, Booking.response_fields))
             
-            return self.get_location()
             return {'status': 'oke', 'booking': rows}, 200, {'Content-Type': 'application/json'}
         else:
             qry = Booking.query.get(id_booking)
@@ -90,6 +90,7 @@ class BookingResource(Resource):
                 # qry.id_tentor = jwtClaims
                 qry.id_tentor = 1
                 # Hitung jarak antara tentor dan murid
+                # jarak_tentor = great_circle(newport_ri, cleveland_oh).km
                 jarak_tentor = 10
                 # Tambahkan harga bensin
                 qry.harga_bensin += 500 * jarak_tentor
@@ -142,15 +143,5 @@ class BookingResource(Resource):
         db.session.add(booking)
         db.session.commit()
         return {'status': 'oke', 'booking': marshal(booking, Booking.response_fields)}, 200, {'Content-Type': 'application/json'}
-
-    def compute_distance(user_address, tentor_address):
-        jarak = user_address - tentor_address
-        return jarak
-
-    def get_location(self):
-        host = 'https://geocode.xyz/?locate=Jalan+Tidar+Malang&json=1'
-        rq = requests.get(host)
-        hasil = rq.json()
-        return hasil
 
 api.add_resource(BookingResource, '/<int:id_booking>', '')
