@@ -11,8 +11,8 @@ from . import *
 from blueprints.user import *
 from blueprints.Client import *
 from blueprints import db
-from datetime import date, datetime
-from sqlalchemy import or_
+from datetime import date, datetime, timedelta
+from sqlalchemy import or_, and_
 
 bp_tentor = Blueprint('tentor', __name__)
 api = Api(bp_tentor)
@@ -104,7 +104,9 @@ class TentorResource(Resource):
         parser.add_argument('mapel', location='args')
         parser.add_argument('jarak', location='args', type=float)
         parser.add_argument('tingkat', location='args', choices=['SD', 'SMP', 'SMA'])
-        parser.add_argument('gender', location='args')
+        parser.add_argument('gender', location='args', choices=['laki-laki', 'perempuan'])
+        parser.add_argument('jadwal', location='args')
+        parser.add_argument('blocked', location='args', type=bool)
         args = parser.parse_args()
         jwtClaims = get_jwt_claims()
         if (id == None):
@@ -128,17 +130,40 @@ class TentorResource(Resource):
                     elif args['tingkat'] == 'SMP':
                         qry = qry.filter(or_(Tentors.tingkat == 'SMP', Tentors.tingkat == 'SMA'))
                 
-                if (args['jarak'] is not None):
-                    if jwtClaims['tipe'] != 'client':
-                        return {'status': 'UNAUTHORIZED'}, 401, { 'Content-Type': 'application/json' }
-                    else:
-                        murid = Clients.query.filter(Clients.user_id == jwtClaims['id']).first()
-                        # qry = qry.filter(Tentors.compute_jarak(Tentors.lat, Tentors.lon, murid.lat, murid.lon) < args['jarak'])
+                if args['gender'] is not None:
+                    qry = qry.filter_by(gender = args['gender'])
+                
+                if args['jadwal'] is not None:
+                    datetime_object = datetime.strptime(args['jadwal'], '%Y-%m-%d %H:%M')
+                    # Jadwal mulai tentor 
+                    qry_jadwal = Jadwaltentor.query.filter(or_(and_(Jadwaltentor.schedule_start <= datetime_object, Jadwaltentor.schedule_end >= datetime_object), and_(Jadwaltentor.schedule_start <= datetime_object + timedelta(hours=1.5), Jadwaltentor.schedule_end >= datetime_object + timedelta(hours=1.5))))
+                    booked = []
+                    for item in qry_jadwal:
+                        booked.append(item.tentor_id)
+                    qry = qry.filter(Tentors.id.notin_(booked))
+                
+                if args['blocked'] is True:
+                    id = get_jwt_claims()['id']
+                    qry_user = User.query.get(id)
+                    qry_client = Clients.query.filter_by(user_id=id).first()
+                    qry_blocked = Blocked.query.filter(Blocked.client_id == qry_client.id)
+                    blocked = []
+                    for data in qry_blocked:
+                        blocked.append(data.blocked_tentor)
+                    qry = qry.filter(Tentors.id.notin_(blocked))
+
+                
+                # if (args['jarak'] is not None):
+                #     if jwtClaims['tipe'] != 'client':
+                #         return {'status': 'UNAUTHORIZED'}, 401, { 'Content-Type': 'application/json' }
+                #     else:
+                #         murid = Clients.query.filter(Clients.user_id == jwtClaims['id']).first()
+                #         qry = qry.filter(Tentors.compute_jarak(Tentors.lat, Tentors.lon, murid.lat, murid.lon) < args['jarak'])
                         
 
-                        for tentor in qry:
+                        # for tentor in qry:
                             # if tentor.compute_jarak(tentor.lat, tentor.lon, murid.lat, murid.lon) <= args['jarak']:
-                            qry = qry.filter((Tentors.compute_jarak(tentor.lat, tentor.lon, murid.lat, murid.lon)) <= args['jarak'])
+                            # qry = qry.filter((Tentors.compute_jarak(tentor.lat, tentor.lon, murid.lat, murid.lon)) <= args['jarak'])
                             
                         # return qry
 
@@ -248,7 +273,7 @@ class TentorResource(Resource):
         if qry_user is not None:
             qry_user.tipe = "unavailable"
             db.session.commit()
-            return {"status":"OK", "message":"Deleted", "data user":marshal(qry_user, User.respon_fields), "data tentor":marshal(qry_tentor, Tentors.respon_fields)}, 200, { 'Content-Type': 'application/json' }
+            return {"status":"OK", "message":"Deleted", "data user": marshal(qry_user, User.respon_fields), "data tentor": marshal(qry_tentor, Tentors.respon_fields)}, 200, { 'Content-Type': 'application/json' }
         return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
 
     def patch(self):

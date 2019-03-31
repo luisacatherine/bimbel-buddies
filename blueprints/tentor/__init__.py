@@ -5,6 +5,9 @@ import datetime
 from geopy.distance import great_circle, geodesic
 from sqlalchemy import func
 from sqlalchemy.ext.hybrid import hybrid_method
+from blueprints.jadwal_tentor import *
+from blueprints.tentor import *
+from blueprints.blocked_tentor import *
 
 #Client CLASS
 

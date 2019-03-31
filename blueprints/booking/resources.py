@@ -91,7 +91,7 @@ class BookingResource(Resource):
         if jwtClaims['tipe'] == 'client':
             qry_murid = Clients.query.filter(Clients.user_id == jwtClaims['id']).first()
         elif jwtClaims['tipe'] == 'tentor':
-            qry_tentor = Tentors.query.filter(Tentors.user_id == jwtClaims['id'].first())
+            qry_tentor = Tentors.query.filter(Tentors.user_id == jwtClaims['id']).first()
         parser = reqparse.RequestParser()
         parser.add_argument('tanggal', location='json')
         parser.add_argument('mapel', type=str, choices=['mat', 'fis', 'kim', 'bio'])
@@ -100,7 +100,7 @@ class BookingResource(Resource):
         qry = Booking.query.get(id_booking)
 
         if args['tanggal'] is not None:
-            if jwtClaims['tipe'] != 'client' and qry.id_murid != murid.id:
+            if jwtClaims['tipe'] != 'client' and qry.id_murid != qry_murid.id:
                 return {'status': 'UNAUTHORIZED'}, 401, {'Content-Type': 'application/json'}
             datetime_object = datetime.strptime(args['tanggal'], '%Y-%m-%d %H:%M')
             if datetime_object < datetime.now():
@@ -111,7 +111,12 @@ class BookingResource(Resource):
                 return {'status': 'gagal', 'message': 'Pemesanan hanya bisa dilakukan 7 hari sebelum tanggal les.'}
             qry.tanggal = args['tanggal']
             qry.status = 'waiting'
+
             # Delete jadwal tentor
+            qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
+            db.session.delete(qry_jadwal)
+            db.session.commit()
+
         
         if args['mapel'] is not None:
             qry.mapel = args['mapel']
@@ -135,10 +140,16 @@ class BookingResource(Resource):
                 qry.saldo_admin += (qry.harga_bensin + qry.harga_booking)
 
                 # Tambah jadwal tentor
+                new_schedule = Jadwaltentor(None, murid.id, tentor.id, qry.id_booking, qry.tanggal, qry.tanggal + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
+                db.session.add(new_schedule)
+                db.session.commit()
 
             elif args['status'] == 'cancelled':
                 # Saldo murid ditambah
                 murid.saldo += (qry.harga_booking + qry.harga_bensin)
+                qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
+                db.session.delete(qry_jadwal)
+                db.session.commit()
 
                 # Kalau masih j-6
                 if datetime.now() + timedelta(hours=6) < qry.tanggal:

@@ -5,6 +5,7 @@ from blueprints.Client import *
 from blueprints.tentor import *
 from blueprints.harga import *
 from blueprints.Payment import *
+from blueprints.jadwal_tentor import *
 
 class Booking(db.Model):
     __tablename__ = "booking"
