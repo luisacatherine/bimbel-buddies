@@ -63,11 +63,17 @@ from blueprints.booking.resources import bp_booking
 from blueprints.tentor.resources import bp_tentor
 from blueprints.auth import bp_auth
 from blueprints.users.resources import bp_admin
+from blueprints.Payment.resources import bp_payment
+from blueprints.Topup.resources import bp_topup
+from blueprints.Review.resources import bp_review
 
 app.register_blueprint(bp_tentor, url_prefix='/tentor')
 app.register_blueprint(bp_auth, url_prefix='/login')
 app.register_blueprint(bp_harga, url_prefix='/harga')
 app.register_blueprint(bp_booking, url_prefix='/booking')
 app.register_blueprint(bp_admin, url_prefix='/api/users')
+app.register_blueprint(bp_review, url_prefix='/review')
+app.register_blueprint(bp_payment, url_prefix='/payment')
+app.register_blueprint(bp_topup, url_prefix='/topup')
 
 db.create_all()

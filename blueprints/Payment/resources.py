@@ -12,8 +12,8 @@ from ..booking import *
 from ..Client import *
 from blueprints import db
 
-bp_topup = Blueprint('topup', __name__)
-api = Api(bp_topup)
+bp_payment = Blueprint('payment', __name__)
+api = Api(bp_payment)
 
 class PaymentResources(Resource):
 
