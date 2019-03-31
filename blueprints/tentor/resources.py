@@ -9,8 +9,10 @@ import random
 #add __init__.py
 from . import *
 from blueprints.user import *
+from blueprints.Client import *
 from blueprints import db
 from datetime import date, datetime
+from sqlalchemy import or_
 
 bp_tentor = Blueprint('tentor', __name__)
 api = Api(bp_tentor)
@@ -95,17 +97,73 @@ class TentorResource(Resource):
         return {"status": "OK", "data user":marshal(user, User.respon_fields), "data tentor":marshal(tentor, Tentors.respon_fields)},200, { 'Content-Type': 'application/json' }
 
     @jwt_required
-    def get(self):    
-        # id = get_jwt_claims()
-        # return id,200, { 'Content-Type': 'application/json' }
-        id = get_jwt_claims()['id']
-        qry_user = User.query.get(id)
-        qry_tentor = Tentors.query.filter_by(user_id=id).first()
-            # select * from where id(pk) = id
-        if qry_user is not None and qry_tentor is not None:
-            return {"status": "OK", "data user":marshal(qry_user, User.respon_fields), "data tentor":marshal(qry_tentor, Tentors.respon_fields)},200, { 'Content-Type': 'application/json' }
-        return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
-    
+    def get(self, id=None):
+        parser = reqparse.RequestParser()
+        parser.add_argument('p', location='args', default=1)
+        parser.add_argument('rp', location='args', default=5)
+        parser.add_argument('mapel', location='args')
+        parser.add_argument('jarak', location='args', type=float)
+        parser.add_argument('tingkat', location='args', choices=['SD', 'SMP', 'SMA'])
+        parser.add_argument('gender', location='args')
+        args = parser.parse_args()
+        jwtClaims = get_jwt_claims()
+        if (id == None):
+            if jwtClaims['tipe'] == 'tentor':
+                id = get_jwt_claims()['id']
+                qry_user = User.query.get(id)
+                qry_tentor = Tentors.query.filter_by(user_id=id).first()
+                if qry_user is not None and qry_tentor is not None:
+                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_tentor, Tentors.respon_fields)},200, { 'Content-Type': 'application/json' }
+                return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
+            else:
+                offset = (args['p'] * args['rp']) - args['rp']
+                qry = Tentors.query
+                
+                if args['mapel'] is not None:
+                    qry = qry.filter_by(fokus = args['mapel'])
+                
+                if args['tingkat'] is not None:
+                    if args['tingkat'] == 'SMA':
+                        qry = qry.filter_by(tingkat = args['tingkat'])
+                    elif args['tingkat'] == 'SMP':
+                        qry = qry.filter(or_(Tentors.tingkat == 'SMP', Tentors.tingkat == 'SMA'))
+                
+                if (args['jarak'] is not None):
+                    if jwtClaims['tipe'] != 'client':
+                        return {'status': 'UNAUTHORIZED'}, 401, { 'Content-Type': 'application/json' }
+                    else:
+                        murid = Clients.query.filter(Clients.user_id == jwtClaims['id']).first()
+                        # qry = qry.filter(Tentors.compute_jarak(Tentors.lat, Tentors.lon, murid.lat, murid.lon) < args['jarak'])
+                        
+
+                        for tentor in qry:
+                            # if tentor.compute_jarak(tentor.lat, tentor.lon, murid.lat, murid.lon) <= args['jarak']:
+                            qry = qry.filter((Tentors.compute_jarak(tentor.lat, tentor.lon, murid.lat, murid.lon)) <= args['jarak'])
+                            
+                        # return qry
+
+                rows = []
+                for row in qry.limit(args['rp']).offset(offset).all():
+                    temp = marshal(row, Tentors.respon_fields)
+                    user = User.query.get(row.user_id)
+                    temp['user'] = marshal(user, User.respon_fields)
+                    rows.append(temp)            
+                return {'status': 'oke', 'tentors': rows}, 200, {'Content-Type': 'application/json'}     
+        else:
+            if jwtClaims['tipe'] == 'tentor':
+                id = get_jwt_claims()['id']
+                qry_user = User.query.get(id)
+                qry_tentor = Tentors.query.filter_by(user_id=id).first()
+                if qry_user is not None and qry_tentor is not None:
+                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_tentor, Tentors.respon_fields)},200, { 'Content-Type': 'application/json' }
+                return {'status': 'NOT_FOUND','message':'user not found'}, 404, { 'Content-Type': 'application/json' }
+            else:
+                qry_tentor = Tentors.query.get(id)
+                qry_user = User.query.get(qry_tentor.user_id)
+                if qry_user is not None and qry_tentor is not None:
+                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_tentor, Tentors.respon_fields)},200, { 'Content-Type': 'application/json' }
+                return {'status': 'NOT_FOUND','message':'user not found'}, 404, { 'Content-Type': 'application/json' }
+
     @jwt_required
     def put(self):
         id = get_jwt_claims()['id']

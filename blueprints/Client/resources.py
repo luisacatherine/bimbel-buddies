@@ -74,19 +74,47 @@ class ClientResource(Resource):
         db.session.add(client)
         db.session.commit()
 
-        return {"status": "OK", "data user":marshal(user, User.respon_fields), "data client":marshal(client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+        return {"status": "OK", "data user": marshal(user, User.respon_fields), "data client": marshal(client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
 
     @jwt_required
-    def get(self):    
-        # id = get_jwt_claims()
-        # return id,200, { 'Content-Type': 'application/json' }
-        id = get_jwt_claims()['id']
-        qry_user = User.query.get(id)
-        qry_client = Clients.query.filter_by(user_id=id).first()
-            # select * from where id(pk) = id
-        if qry_user is not None and qry_client is not None:
-            return {"status": "OK", "data user":marshal(user, User.respon_fields), "data client":marshal(client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
-        return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
+    def get(self, id=None):
+        parser = reqparse.RequestParser()
+        parser.add_argument('p', location='args', default=1)
+        parser.add_argument('rp', location='args', default=5)
+        args = parser.parse_args()
+        jwtClaims = get_jwt_claims()
+        if (id == None):
+            if jwtClaims['tipe'] == 'client':
+                id = get_jwt_claims()['id']
+                qry_user = User.query.get(id)
+                qry_client = Clients.query.filter_by(user_id=id).first()
+                if qry_user is not None and qry_client is not None:
+                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+                return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
+            else:
+                offset = (args['p'] * args['rp']) - args['rp']
+                qry = Clients.query
+                rows = []
+                for row in qry.limit(args['rp']).offset(offset).all():
+                    temp = marshal(row, Clients.respon_fields)
+                    user = User.query.get(row.user_id)
+                    temp['user'] = marshal(user, User.respon_fields)
+                    rows.append(temp)            
+                return {'status': 'oke', 'clients': rows}, 200, {'Content-Type': 'application/json'}     
+        else:
+            if jwtClaims['tipe'] == 'client':
+                id = get_jwt_claims()['id']
+                qry_user = User.query.get(id)
+                qry_client = Clients.query.filter_by(user_id=id).first()
+                if qry_user is not None and qry_client is not None:
+                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+                return {'status': 'NOT_FOUND','message':'user not found'}, 404, { 'Content-Type': 'application/json' }
+            else:
+                qry_client = Clients.query.get(id)
+                qry_user = User.query.get(qry_client.user_id)
+                if qry_user is not None and qry_client is not None:
+                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+                return {'status': 'NOT_FOUND','message':'user not found'}, 404, { 'Content-Type': 'application/json' }
     
     @jwt_required
     def put(self):

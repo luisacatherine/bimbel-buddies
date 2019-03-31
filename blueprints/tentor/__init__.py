@@ -2,6 +2,9 @@ import random, logging
 from blueprints import db
 from flask_restful import fields
 import datetime
+from geopy.distance import great_circle, geodesic
+from sqlalchemy import func
+from sqlalchemy.ext.hybrid import hybrid_method
 
 #Client CLASS
 
@@ -91,6 +94,21 @@ class Tentors(db.Model):
         self.created_at = created_at
         self.updated_at = updated_at
     
+    @hybrid_method
+    def compute_jarak(self, tentorlat, tentorlon, otherlat, otherlon):
+        alamat_tentor = (tentorlat, tentorlon)
+        alamat_user = (otherlat, otherlon)
+        jarak_tu = geodesic(alamat_tentor, alamat_user).km
+        return jarak_tu
+    
+    @compute_jarak.expression
+    def compute_jarak(cls, tentorlat, tentorlon, otherlat, otherlon):
+        alamat_tentor = (tentorlat, tentorlon)
+        alamat_user = (otherlat, otherlon)
+        jarak_tu = geodesic(alamat_tentor, alamat_user).km
+        print(jarak_tu)
+        return jarak_tu
+
     #return repr harus string
     def __repr__(self):
         return '<Tentors %r>' % self.id
