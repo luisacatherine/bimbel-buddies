@@ -90,11 +90,11 @@ class ReviewResources(Resource):
             return {'status': 'gagal', 'message': 'Anda tidak berhak menulis review untuk sesi pelajaran ini!'}, 401, { 'Content-Type': 'application/json' }
         
         if (qry_booking.status != 'done'):
-            return {'status': 'gagal', 'message': 'Selesaikan dahulu sesi pelajaran Anda sebelum menulis review!'}, 401, {'Content-Type': 'application/json'}
+            return {'status': 'gagal', 'message': 'Selesaikan dahulu sesi pelajaran Anda sebelum menulis review!'}, 200, {'Content-Type': 'application/json'}
 
         qry_review = Reviews.query.filter(Reviews.id_booking == args['id_booking']).first()
         if qry_review is not None:
-            return {'status': 'gagal', 'message': 'Anda sudah pernah menulis review untuk sesi pelajaran ini!'}, 401, { 'Content-Type': 'application/json' }
+            return {'status': 'gagal', 'message': 'Anda sudah pernah menulis review untuk sesi pelajaran ini!'}, 200, { 'Content-Type': 'application/json' }
 
         # Ubah rating keseluruhan tentor
         qry_tentor = Tentors.query.filter(Tentors.id == qry_booking.id_tentor).first()
@@ -106,7 +106,7 @@ class ReviewResources(Resource):
         review = Reviews(None, murid.id, qry_booking.id_tentor, args['id_booking'], args['rating'], args['deskripsi'], created_at, updated_at)
         db.session.add(review)
         db.session.commit()
-        return {'status': 'OK', 'message':"success add review", 'client': marshal(murid, Clients.respon_fields), 'data': marshal(review, Reviews.response_fields)}, 200, { 'Content-Type': 'application/json' }
+        return {'status': 'OK', 'message':"Anda berhasil menambahkan review untuk tentor ini", 'client': marshal(murid, Clients.respon_fields), 'data': marshal(review, Reviews.respon_fields)}, 200, { 'Content-Type': 'application/json' }
 
     def patch(self):
         return 'Not yet implement', 501
