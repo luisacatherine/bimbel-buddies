@@ -1,21 +1,93 @@
-[2019-03-07 22:46:27,773] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:45} WARNING - REQUEST_LOG	{"request": {"item_id": 1, "qty": 1}, "response": {"id": 2, "cart_id": 1, "item_id": 1, "nama_item": "GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING", "qty": 1, "harga": 935000, "created_at": "Thu, 07 Mar 2019 22:46:28 -0000", "updated_at": "Thu, 07 Mar 2019 22:46:28 -0000"}}
-[2019-03-07 22:58:39,997] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:43} WARNING - REQUEST_LOG	{"request": {}, "response": [{"page": 1}, {"id": 1, "cart_id": 1, "item_id": 2, "nama_item": "MATRAS CAMPING ALUMUNIUM FOIL", "qty": 3, "harga": 90000, "created_at": "Thu, 07 Mar 2019 22:45:03 -0000", "updated_at": "Thu, 07 Mar 2019 22:45:03 -0000"}, {"id": 2, "cart_id": 1, "item_id": 1, "nama_item": "GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING", "qty": 1, "harga": 935000, "created_at": "Thu, 07 Mar 2019 22:46:28 -0000", "updated_at": "Thu, 07 Mar 2019 22:46:28 -0000"}]} GET
-[2019-03-07 23:01:38,755] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:43} WARNING - REQUEST_LOG	{"request": {"nama_item": "tenda"}, "response": [{"page": 1}, {"id": 2, "cart_id": 1, "item_id": 1, "nama_item": "GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING", "qty": 1, "harga": 935000, "created_at": "Thu, 07 Mar 2019 22:46:28 -0000", "updated_at": "Thu, 07 Mar 2019 22:46:28 -0000"}]} GET
-[2019-03-07 23:03:37,103] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:43} WARNING - REQUEST_LOG	{"request": {"nama_item": "tenda"}, "response": [{"page": 1}, {"id": 2, "cart_id": 1, "item_id": 1, "nama_item": "GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING", "qty": 1, "harga": 935000, "created_at": "Thu, 07 Mar 2019 22:46:28 -0000", "updated_at": "Thu, 07 Mar 2019 22:46:28 -0000"}]} GET
-[2019-03-07 23:04:01,106] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:43} WARNING - REQUEST_LOG	{"request": {"nama_item": "tenda"}, "response": [{"page": 1}, {"id": 2, "cart_id": 1, "item_id": 1, "nama_item": "GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING", "qty": 1, "harga": 935000, "created_at": "Thu, 07 Mar 2019 22:46:28 -0000", "updated_at": "Thu, 07 Mar 2019 22:46:28 -0000"}]} GET
-[2019-03-07 23:04:05,384] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:43} WARNING - REQUEST_LOG	{"request": {}, "response": [{"page": 1}, {"id": 1, "cart_id": 1, "item_id": 2, "nama_item": "MATRAS CAMPING ALUMUNIUM FOIL", "qty": 3, "harga": 90000, "created_at": "Thu, 07 Mar 2019 22:45:03 -0000", "updated_at": "Thu, 07 Mar 2019 22:45:03 -0000"}, {"id": 2, "cart_id": 1, "item_id": 1, "nama_item": "GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING", "qty": 1, "harga": 935000, "created_at": "Thu, 07 Mar 2019 22:46:28 -0000", "updated_at": "Thu, 07 Mar 2019 22:46:28 -0000"}]} GET
-[2019-03-08 06:16:30,008] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:43} WARNING - REQUEST_LOG	{"request": {}, "response": [{"page": 1}, {"id": 1, "cart_id": 1, "item_id": 2, "nama_item": "MATRAS CAMPING ALUMUNIUM FOIL", "qty": 3, "harga": 90000, "created_at": "Thu, 07 Mar 2019 22:45:03 -0000", "updated_at": "Thu, 07 Mar 2019 22:45:03 -0000"}, {"id": 2, "cart_id": 1, "item_id": 1, "nama_item": "GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING", "qty": 1, "harga": 935000, "created_at": "Thu, 07 Mar 2019 22:46:28 -0000", "updated_at": "Thu, 07 Mar 2019 22:46:28 -0000"}]} GET
-[2019-03-08 06:19:28,693] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:45} WARNING - REQUEST_LOG	{"request": null, "response": {"status": "NOT_FOUND", "message": "item not found"}}
-[2019-03-08 06:20:18,400] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:45} WARNING - REQUEST_LOG	{"request": null, "response": {"status": "NOT_FOUND", "message": "item not found"}}
-[2019-03-08 06:20:46,900] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:45} WARNING - REQUEST_LOG	{"request": null, "response": "OrderedDict([('id', 1), ('cart_id', 1), ('item_id', 2), ('nama_item', 'MATRAS CAMPING ALUMUNIUM FOIL'), ('qty', 3), ('harga', 90000), ('created_at', 'Thu, 07 Mar 2019 22:45:03 -0000'), ('updated_at', 'Thu, 07 Mar 2019 22:45:03 -0000')])has been deleted"}
-[2019-03-08 06:20:59,056] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:43} WARNING - REQUEST_LOG	{"request": {}, "response": [{"page": 1}]} GET
-[2019-03-08 06:21:12,173] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:45} WARNING - REQUEST_LOG	{"request": {"item_id": 2, "qty": 3}, "response": {"id": 3, "cart_id": 1, "item_id": 2, "nama_item": "MATRAS CAMPING ALUMUNIUM FOIL", "qty": 3, "harga": 90000, "created_at": "Fri, 08 Mar 2019 06:21:12 -0000", "updated_at": "Fri, 08 Mar 2019 06:21:12 -0000"}}
-[2019-03-08 06:21:18,358] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:45} WARNING - REQUEST_LOG	{"request": {"item_id": 1, "qty": 1}, "response": {"id": 4, "cart_id": 1, "item_id": 1, "nama_item": "GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING", "qty": 1, "harga": 935000, "created_at": "Fri, 08 Mar 2019 06:21:18 -0000", "updated_at": "Fri, 08 Mar 2019 06:21:18 -0000"}}
-[2019-03-08 06:21:31,291] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:43} WARNING - REQUEST_LOG	{"request": {}, "response": [{"page": 1}, {"id": 3, "cart_id": 1, "item_id": 2, "nama_item": "MATRAS CAMPING ALUMUNIUM FOIL", "qty": 3, "harga": 90000, "created_at": "Fri, 08 Mar 2019 06:21:12 -0000", "updated_at": "Fri, 08 Mar 2019 06:21:12 -0000"}, {"id": 4, "cart_id": 1, "item_id": 1, "nama_item": "GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING", "qty": 1, "harga": 935000, "created_at": "Fri, 08 Mar 2019 06:21:18 -0000", "updated_at": "Fri, 08 Mar 2019 06:21:18 -0000"}]} GET
-[2019-03-08 06:21:46,476] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:45} WARNING - REQUEST_LOG	{"request": null, "response": "OrderedDict([('id', 4), ('cart_id', 1), ('item_id', 1), ('nama_item', 'GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING'), ('qty', 1), ('harga', 935000), ('created_at', 'Fri, 08 Mar 2019 06:21:18 -0000'), ('updated_at', 'Fri, 08 Mar 2019 06:21:18 -0000')])has been deleted"}
-[2019-03-08 06:21:56,593] {/home/alphatech/kumpulan/Portofolio/rest_e_commerce/rest_scv_livecode/blueprints/__init__.py:45} WARNING - REQUEST_LOG	{"request": {"item_id": 1, "qty": 1}, "response": {"id": 5, "cart_id": 1, "item_id": 1, "nama_item": "GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING", "qty": 1, "harga": 935000, "created_at": "Fri, 08 Mar 2019 06:21:57 -0000", "updated_at": "Fri, 08 Mar 2019 06:21:57 -0000"}}
-[2019-03-19 19:13:23,137] {/home/alphatech/tugas/PORTOFOLIO/Portofolio/Api_Ecommerce/blueprints/__init__.py:43} WARNING - REQUEST_LOG	{"request": {}, "response": {"page": 1, "message": "success", "items": [{"id": 1, "nama": "GREAT OUTDOOR(GT1503) JAVA 4 PRO TENDA CAMPING", "merek": "GREAT OUTDOOR", "kategori": "Tenda & Furniture", "detail": "Double layer, warna MERAH. Kapasitas 4 orang, berat 4,1 kg", "harga": 935000, "stock": 20, "url_picture": "https://apollo-singapore.akamaized.net/v1/files/7coisxrdqbab-ID/image;s=966x691;olx-st/_1_.jpg", "user_id": 3, "created_at": "Sun, 03 Mar 2019 00:00:00 -0000", "updated_at": "Sun, 03 Mar 2019 00:00:00 -0000", "merchant's name": "merchant2"}, {"id": 2, "nama": "MATRAS CAMPING ALUMUNIUM FOIL", "merek": "LOKAL", "kategori": "Matras Camping", "detail": "Bahan ringan berlapis alumunium foil. Ukuran 190cm x 100 cm. Berat -/+ 300 gr", "harga": 30000, "stock": 94, "url_picture": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/4/13/22438832/22438832_dd43d3aa-8fd6-4fc8-93f0-7914a62359c8_940_940.jpg", "user_id": 2, "created_at": "Sun, 03 Mar 2019 00:00:00 -0000", "updated_at": "Thu, 07 Mar 2019 20:59:13 -0000", "merchant's name": "merchant1"}, {"id": 3, "nama": "MATRAS CAMPING KARET", "merek": "LOKAL", "kategori": "Matras Camping", "detail": "Bahan Spon Karet 3mm. Ukuran 180cm x 60cm. model gulung", "harga": 27500, "stock": 94, "url_picture": "https://id-live-01.slatic.net/original/e02595453adc571cf814b9535f6a9fc3.jpg", "user_id": 2, "created_at": "Sun, 03 Mar 2019 00:00:00 -0000", "updated_at": "Sun, 03 Mar 2019 00:00:00 -0000", "merchant's name": "merchant1"}]}} GET
-[2019-03-19 21:32:23,303] {/home/alphatech/tugas/PORTOFOLIO/Portofolio/Api_Ecommerce/blueprints/__init__.py:43} WARNING - REQUEST_LOG	{"request": {}, "response": {"msg": "Token has expired"}} GET
-[2019-03-19 21:32:31,698] {/home/alphatech/tugas/PORTOFOLIO/Portofolio/Api_Ecommerce/blueprints/__init__.py:45} WARNING - REQUEST_LOG	{"request": {"username": "admin1", "password": "passw0rd"}, "response": {"status": "UNAUTHORIZED", "message": "invalid username or password or not registered yet"}}
-[2019-03-19 21:33:00,561] {/home/alphatech/tugas/PORTOFOLIO/Portofolio/Api_Ecommerce/blueprints/__init__.py:45} WARNING - REQUEST_LOG	{"request": {"username": "admin1", "password": "passw0rd", "status": "admin", "email": "admin@altera.id", "alamat": "Mount AKINA Gunma perfekture"}, "response": {"message": "The method is not allowed for the requested URL."}}
-[2019-03-19 21:33:18,286] {/home/alphatech/tugas/PORTOFOLIO/Portofolio/Api_Ecommerce/blueprints/__init__.py:43} WARNING - REQUEST_LOG	{"request": {}, "response": {"msg": "Token has expired"}} GET
+[2019-04-01 20:08:53,586] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
+Traceback (most recent call last):
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
+    return fn(*args, **kwargs)
+  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 162, in get
+    jarak = resp['rows'][0]['elements'][0]['distance']['text']
+TypeError: string indices must be integers
+[2019-04-01 20:08:53,600] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
+[2019-04-01 20:09:07,458] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": "tes"} GET
+[2019-04-01 20:09:20,332] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
+Traceback (most recent call last):
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
+    return fn(*args, **kwargs)
+  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 163, in get
+    jarak = resp['rows'][0]['elements'][0]['distance']['text']
+TypeError: string indices must be integers
+[2019-04-01 20:09:20,336] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
+[2019-04-01 20:09:36,719] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": "tes"} GET
+[2019-04-01 20:09:56,882] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
+Traceback (most recent call last):
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
+    return fn(*args, **kwargs)
+  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 164, in get
+    jarak = resp['rows'][0]['elements'][0]['distance']['text']
+TypeError: string indices must be integers
+[2019-04-01 20:09:56,885] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
+[2019-04-01 20:10:11,513] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
+Traceback (most recent call last):
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
+    return fn(*args, **kwargs)
+  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 164, in get
+    jarak = resp['rows'][0]['elements'][0]['distance']['text']
+TypeError: string indices must be integers
+[2019-04-01 20:10:11,515] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
+[2019-04-01 20:10:32,073] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
+Traceback (most recent call last):
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
+    resp = resource(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
+    return self.dispatch_request(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
+    resp = meth(*args, **kwargs)
+  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
+    return fn(*args, **kwargs)
+  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 164, in get
+    jarak = resp['rows'][0]['elements'][0]['distance']['text']
+TypeError: string indices must be integers
+[2019-04-01 20:10:32,075] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
+[2019-04-01 20:11:29,706] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=Jalan Tidar Karang Besuki Kota Malang&destinations=Jalan Tidar Karang Besuki Kota Malang&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg"} GET

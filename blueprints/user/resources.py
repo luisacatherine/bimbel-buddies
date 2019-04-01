@@ -94,6 +94,12 @@ class AdminResource(Resource):
             return {'status': 'OK','message':"user has been deleted",'user':marshal(qry, Users.respon_fields)},200, { 'Content-Type': 'application/json' }
         return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
 
+    # @jwt_required
+    # def post(self):
+    #     parser = reqparse.RequestParser()
+    #     parser.add_argument('id')
+
+    
     def patch(self):
         return 'Not yet implement', 501
 

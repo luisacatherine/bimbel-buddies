@@ -1,9 +1,11 @@
 from blueprints import db
 from flask_restful import fields
 import datetime
-# from blueprints.murid import *
-# from blueprints.tentor import *
+from blueprints.Client import *
+from blueprints.tentor import *
 from blueprints.harga import *
+from blueprints.Payment import *
+from blueprints.jadwal_tentor import *
 
 class Booking(db.Model):
     __tablename__ = "booking"
@@ -33,6 +35,36 @@ class Booking(db.Model):
         'harga_bensin': fields.Integer,
         'saldo_tentor': fields.Integer,
         'saldo_admin': fields.Integer,
+        'created_at': fields.DateTime,
+        'updated_at': fields.DateTime
+    }
+
+    tentor_fields = {
+        'id_booking': fields.Integer,
+        'id_murid': fields.Integer,
+        'id_tentor': fields.Integer,
+        'jenis': fields.String,
+        'tanggal': fields.DateTime,
+        'mapel': fields.String,
+        'status': fields.String,
+        'harga_booking': fields.Integer,
+        'harga_bensin': fields.Integer,
+        'saldo_tentor': fields.Integer,
+        'saldo_admin': fields.Integer,
+        'created_at': fields.DateTime,
+        'updated_at': fields.DateTime
+    }
+
+    murid_fields = {
+        'id_booking': fields.Integer,
+        'id_murid': fields.Integer,
+        'id_tentor': fields.Integer,
+        'jenis': fields.String,
+        'tanggal': fields.DateTime,
+        'mapel': fields.String,
+        'status': fields.String,
+        'harga_booking': fields.Integer,
+        'harga_bensin': fields.Integer,
         'created_at': fields.DateTime,
         'updated_at': fields.DateTime
     }

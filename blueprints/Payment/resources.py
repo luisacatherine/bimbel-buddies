@@ -5,11 +5,11 @@ from time import strftime
 from logging.handlers import RotatingFileHandler
 from flask_jwt_extended import jwt_required, get_jwt_claims
 import random
-from datetime import date, datetime
 #add __init__.py
 from . import *
 from ..booking import *
 from ..Client import *
+from datetime import date, datetime
 from blueprints import db
 
 bp_payment = Blueprint('payment', __name__)
@@ -22,8 +22,8 @@ class PaymentResources(Resource):
 
     @jwt_required
     def get(self):
-        status = get_jwt_claims()['status']
-        if status == "admin":
+        status = get_jwt_claims()['tipe']
+        if status == "admin" or status == 'bank':
             parser = reqparse.RequestParser()
             parser.add_argument('p',type=int, location='args', default=1)
             parser.add_argument('rp',type=int, location='args', default=5)
@@ -54,16 +54,16 @@ class PaymentResources(Resource):
             for row in qry_payment.limit(args['rp']).offset(offset).all():
                 rows.append(marshal(row, Payments.respon_fields))
 
-            return {'status': 'OK','message':"success",'data_Payment':rows}, 200, { 'Content-Type': 'application/json' }
+            return {'status': 'OK','message':"success", 'data_Payment': rows}, 200, { 'Content-Type': 'application/json' }
         else :
-            return {'message':'UNAUTHORIZED'},404, { 'Content-Type': 'application/json' }
+            return {'message':'UNAUTHORIZED'}, 401, { 'Content-Type': 'application/json' }
 
     # ===== verifikasi duit admin =====
     @jwt_required
     def put(self,id):
         tipe = get_jwt_claims()['tipe']
-        if tipe != "admin":
-            return {'message':'UNAUTHORIZED'},404, { 'Content-Type': 'application/json' }            
+        if tipe != "admin" and tipe != 'bank':
+            return {'message':'UNAUTHORIZED'}, 401, { 'Content-Type': 'application/json' }            
         qry_payment = Payments.query.get(id)
         payment = marshal(qry_payment, Payments.respon_fields)
         parser = reqparse.RequestParser()

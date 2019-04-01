@@ -26,14 +26,11 @@ class ClientResource(Resource):
         parser.add_argument('nama', location='json', required=True),
         parser.add_argument('jalan', location='json', required=True),
         parser.add_argument('kota', location='json', required=True),
-        parser.add_argument('kelurahan', location='json'),
         parser.add_argument('phone', location='json', required=True),
         parser.add_argument('image', location='json'),
         parser.add_argument('tgl_lahir', location='json', required=True),
         parser.add_argument('gender', location='json', required=True),
-        parser.add_argument('tingkat', location='json', required=True),
-        parser.add_argument('gender_tentor', location='json'),
-        parser.add_argument('ortu', location='json')
+        parser.add_argument('tingkat', location='json', required=True)
         args = parser.parse_args()#sudah jadi dictionary
 
         qry_user = User.query.filter_by(username=args['username']).first()
@@ -51,20 +48,13 @@ class ClientResource(Resource):
         password = hashlib.md5(args['password'].encode()).hexdigest()
         saldo = 0
         tipe = "client"
-        geolocator = Nominatim(user_agent="specify_your_app_name_here")
-        alamat=""
-        if args["kelurahan"] is not None:
-            alamat = "Jalan " + args["jalan"] +" "+ args["kelurahan"] +" Kota "+ args["kota"]
-        else:
-            alamat = "Jalan " + args["jalan"] +" Kota "+ args["kota"]
-        location = geolocator.geocode(alamat)
+        alamat = args["jalan"] + " " + args["kota"]
+        response = requests.get("https://maps.googleapis.com/maps/api/geocode/json?address=" + alamat + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
+        location = response.json()
         if location is None:
             return {'message':'alamat kurang yakin'} ,404, { 'Content-Type': 'application/json' }
-        print(location.address)
-        print((location.latitude, location.longitude))
-        lat = location.latitude
-        lon = location.longitude
-        print(location.raw)
+        lat = location['results'][0]['geometry']['location']['lat']
+        lon = location['results'][0]['geometry']['location']['lng']
         user = User(None,args['username'],password,tipe)
         db.session.add(user)
         db.session.commit()
@@ -74,19 +64,47 @@ class ClientResource(Resource):
         db.session.add(client)
         db.session.commit()
 
-        return {"status": "OK", "data user":marshal(user, User.respon_fields), "data client":marshal(client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+        return {"status": "OK", "data user": marshal(user, User.respon_fields), "data client": marshal(client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
 
     @jwt_required
-    def get(self):    
-        # id = get_jwt_claims()
-        # return id,200, { 'Content-Type': 'application/json' }
-        id = get_jwt_claims()['id']
-        qry_user = User.query.get(id)
-        qry_client = Clients.query.filter_by(user_id=id).first()
-            # select * from where id(pk) = id
-        if qry_user is not None and qry_client is not None:
-            return {"status": "OK", "data user":marshal(user, User.respon_fields), "data client":marshal(client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
-        return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
+    def get(self, id=None):
+        parser = reqparse.RequestParser()
+        parser.add_argument('p', location='args', default=1)
+        parser.add_argument('rp', location='args', default=5)
+        args = parser.parse_args()
+        jwtClaims = get_jwt_claims()
+        if (id == None):
+            if jwtClaims['tipe'] == 'client':
+                id = get_jwt_claims()['id']
+                qry_user = User.query.get(id)
+                qry_client = Clients.query.filter_by(user_id=id).first()
+                if qry_user is not None and qry_client is not None:
+                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+                return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
+            else:
+                offset = (args['p'] * args['rp']) - args['rp']
+                qry = Clients.query
+                rows = []
+                for row in qry.limit(args['rp']).offset(offset).all():
+                    temp = marshal(row, Clients.respon_fields)
+                    user = User.query.get(row.user_id)
+                    temp['user'] = marshal(user, User.respon_fields)
+                    rows.append(temp)            
+                return {'status': 'oke', 'clients': rows}, 200, {'Content-Type': 'application/json'}     
+        else:
+            if jwtClaims['tipe'] == 'client':
+                id = get_jwt_claims()['id']
+                qry_user = User.query.get(id)
+                qry_client = Clients.query.filter_by(user_id=id).first()
+                if qry_user is not None and qry_client is not None:
+                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+                return {'status': 'NOT_FOUND','message':'user not found'}, 404, { 'Content-Type': 'application/json' }
+            else:
+                qry_client = Clients.query.get(id)
+                qry_user = User.query.get(qry_client.user_id)
+                if qry_user is not None and qry_client is not None:
+                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+                return {'status': 'NOT_FOUND','message':'user not found'}, 404, { 'Content-Type': 'application/json' }
     
     @jwt_required
     def put(self):
