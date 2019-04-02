@@ -130,9 +130,18 @@ class BookingResource(Resource):
                 qry.id_tentor = tentor.id
 
                 # Hitung jarak antara tentor dan murid
-                alamat_tentor = (tentor.lat, tentor.lon)
-                alamat_murid = (murid.lat, murid.lon)
-                jarak_tentor = geodesic(alamat_tentor, alamat_murid).km
+                resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
+                resp = resp.json()
+                jarak = resp['rows'][0]['elements'][0]['distance']['text']
+                angka = re.findall(r'([1-9]|\.)', jarak)
+                angka = float(''.join(angka))
+                satuan = re.findall(r'([a-z])', jarak)
+                satuan = ''.join(satuan)
+                if satuan == 'mi':
+                    angka = angka * 1609 / 1000
+                if satuan == 'ft':
+                    angka = angka * 3048 / 10000
+                jarak_tentor = angka
                 
                 # Tambahkan harga bensin
                 qry.harga_bensin += 700 * jarak_tentor

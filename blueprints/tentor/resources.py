@@ -93,12 +93,12 @@ class TentorResource(Resource):
         parser.add_argument('p', location='args', default=1)
         parser.add_argument('rp', location='args', default=5)
         parser.add_argument('mapel', location='args')
-        parser.add_argument('jarak', location='args', type=int)
+        parser.add_argument('jarak', location='args', type=float)
         parser.add_argument('tingkat', location='args', choices=['SD', 'SMP', 'SMA'])
         parser.add_argument('gender', location='args', choices=['laki-laki', 'perempuan'])
         parser.add_argument('jadwal', location='args')
         parser.add_argument('blocked', location='args', type=bool)
-        parser.add_argument('sortby', location='args', choices=['rating', 'jarak'])
+        parser.add_argument('sortby', location='args', choices=['rating', 'pendidikan'])
         args = parser.parse_args()
         jwtClaims = get_jwt_claims()
         if (id == None):
@@ -143,12 +143,6 @@ class TentorResource(Resource):
                     for data in qry_blocked:
                         blocked.append(data.blocked_tentor)
                     qry = qry.filter(Tentors.id.notin_(blocked))
-                
-                if args['sortby'] == 'rating':
-                    qry = qry.order_by(Tentors.rating.desc())
-                # elif args['sortby'] == 'jarak':
-                #     qry = qry.order_by(Tentors.updated_at.desc())
-
 
                 if (args['jarak'] is not None):
                     # return "tes"
@@ -158,6 +152,7 @@ class TentorResource(Resource):
                         murid = Clients.query.filter(Clients.user_id == jwtClaims['id']).first()
                         tentors = Tentors.query
                         distance = []
+                        jarak = []
                         for tentor in tentors:
                             resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
                             resp = resp.json()
@@ -170,9 +165,16 @@ class TentorResource(Resource):
                                 angka = angka * 1609 / 1000
                             if satuan == 'ft':
                                 angka = angka * 3048 / 10000
-                            if int(angka) > args['jarak']:
+                            if angka > args['jarak']:
                                 distance.append(tentor.id)
+                                jarak.append(angka)
                         qry = qry.filter(Tentors.id.notin_(distance))
+                
+                if args['sortby'] == 'rating':
+                    qry = qry.order_by(Tentors.rating.desc())
+
+                elif args['sortby'] == 'pendidikan':
+                    qry = qry.order_by(Tentors.pendidikan.desc())
 
                 rows = []
                 for row in qry.limit(args['rp']).offset(offset).all():
@@ -209,7 +211,6 @@ class TentorResource(Resource):
         parser.add_argument('nama', location='json', default=temp1["nama"]),
         parser.add_argument('jalan', location='json'),
         parser.add_argument('kota', location='json'),
-        parser.add_argument('kelurahan', location='json'),
         parser.add_argument('ktp', location='json', default=temp1["ktp"]),
         parser.add_argument('phone', location='json', default=temp1["phone"]),
         parser.add_argument('image', location='json', default=temp1["image"]),
@@ -221,7 +222,6 @@ class TentorResource(Resource):
         parser.add_argument('ket', location='json', default=temp1["ket"]),
         parser.add_argument('rekening', location='json', default=temp1["rekening"]),
         parser.add_argument('pemilik_nasabah', location='json', default=temp1["pemilik_nasabah"]),
-        parser.add_argument('available', location='json', default=temp1["available"]),
         parser.add_argument('range_jam', location='json', default=temp1["range_jam"]),
         args = parser.parse_args()
         
@@ -233,21 +233,14 @@ class TentorResource(Resource):
             # select * from where id = id
         if qry_user is not None and qry_tentor is not None:
             if (args["kota"] is not None and args["jalan"] is not None):
-                geolocator = Nominatim(user_agent="specify_your_app_name_here")
-                alamat=""
-                if args["kelurahan"] is not None:
-                    alamat = "Jalan " + args["jalan"] +" "+ args["kelurahan"] +" Kota "+ args["kota"]
-                else:
-                    alamat = "Jalan " + args["jalan"] +" Kota "+ args["kota"]
-                location = geolocator.geocode(alamat)
+                alamat = args["jalan"] + " " + args["kota"]
+                response = requests.get("https://maps.googleapis.com/maps/api/geocode/json?address=" + alamat + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
+                location = response.json()
                 if location is None:
                     return {'message':'alamat kurang yakin'} ,404, { 'Content-Type': 'application/json' }
                 else:
-                    print(location.address)
-                    print((location.latitude, location.longitude))
-                    lat = location.latitude
-                    lon = location.longitude
-                    print(location.raw)
+                    lat = location['results'][0]['geometry']['location']['lat']
+                    lon = location['results'][0]['geometry']['location']['lng']
                     qry_tentor.address = alamat
                     qry_tentor.lat = lat
                     qry_tentor.lon = lon
@@ -266,7 +259,6 @@ class TentorResource(Resource):
             qry_tentor.ket = args['ket']
             qry_tentor.rekening = args['rekening']
             qry_tentor.pemilik_nasabah = args['pemilik_nasabah']
-            qry_tentor.available = args['available']
             qry_tentor.range_jam = args['range_jam']
             db.session.commit()
             return {"status":"OK", "message":"Updated", "data user":marshal(qry_user, User.respon_fields), "data tentor":marshal(qry_tentor, Tentors.respon_fields)}, 200, { 'Content-Type': 'application/json' }

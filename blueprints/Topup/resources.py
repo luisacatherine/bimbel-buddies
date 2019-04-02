@@ -47,7 +47,6 @@ class TopupResource(Resource):
                 rows = []
                 for row in qry_topup.limit(args['rp']).offset(offset).all():
                     rows.append(marshal(row, Topups.respon_fields))
-
                 return {'status': 'OK','message':"success",'data_TopUp':rows}, 200, { 'Content-Type': 'application/json' }
             else:
                 qry_topup = Topups.query.get(id)
