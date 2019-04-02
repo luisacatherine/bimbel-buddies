@@ -30,7 +30,6 @@ class Tentors(db.Model):
     rekening = db.Column(db.String(30))
     pemilik_nasabah = db.Column(db.String(100))
     available = db.Column(db.String(30))
-    range_jam = db.Column(db.String(30))
     saldo = db.Column(db.Integer)
     rating = db.Column(db.Float)
     qty_rating = db.Column(db.Integer)
@@ -57,7 +56,6 @@ class Tentors(db.Model):
         'rekening' : fields.String,
         'pemilik_nasabah' : fields.String,
         'available' : fields.String,
-        'range_jam' : fields.String,
         'saldo': fields.Integer,
         'rating' : fields.Float,
         'qty_rating': fields.Integer,
@@ -69,7 +67,7 @@ class Tentors(db.Model):
     }
 
     def __init__(self,id,user_id,nama,address,ktp,phone,image,tgl_lahir,gender,fokus,tingkat,
-        pendidikan,ket,rekening,pemilik_nasabah,available,range_jam,saldo,rating,qty_rating,lat,
+        pendidikan,ket,rekening,pemilik_nasabah,available,saldo,rating,qty_rating,lat,
         lon,status,created_at,updated_at):
         self.id = id
         self.user_id = user_id
@@ -87,7 +85,6 @@ class Tentors(db.Model):
         self.rekening = rekening
         self.pemilik_nasabah = pemilik_nasabah
         self.available = available
-        self.range_jam = range_jam
         self.saldo = saldo
         self.rating = rating
         self.qty_rating = qty_rating

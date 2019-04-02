@@ -26,14 +26,11 @@ class ClientResource(Resource):
         parser.add_argument('nama', location='json', required=True),
         parser.add_argument('jalan', location='json', required=True),
         parser.add_argument('kota', location='json', required=True),
-        parser.add_argument('kelurahan', location='json'),
         parser.add_argument('phone', location='json', required=True),
         parser.add_argument('image', location='json'),
         parser.add_argument('tgl_lahir', location='json', required=True),
         parser.add_argument('gender', location='json', required=True),
-        parser.add_argument('tingkat', location='json', required=True),
-        parser.add_argument('gender_tentor', location='json'),
-        parser.add_argument('ortu', location='json')
+        parser.add_argument('tingkat', location='json', required=True)
         args = parser.parse_args()#sudah jadi dictionary
 
         qry_user = User.query.filter_by(username=args['username']).first()
@@ -51,20 +48,13 @@ class ClientResource(Resource):
         password = hashlib.md5(args['password'].encode()).hexdigest()
         saldo = 0
         tipe = "client"
-        geolocator = Nominatim(user_agent="specify_your_app_name_here")
-        alamat=""
-        if args["kelurahan"] is not None:
-            alamat = "Jalan " + args["jalan"] +" "+ args["kelurahan"] +" Kota "+ args["kota"]
-        else:
-            alamat = "Jalan " + args["jalan"] +" Kota "+ args["kota"]
-        location = geolocator.geocode(alamat)
+        alamat = args["jalan"] + " " + args["kota"]
+        response = requests.get("https://maps.googleapis.com/maps/api/geocode/json?address=" + alamat + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
+        location = response.json()
         if location is None:
             return {'message':'alamat kurang yakin'} ,404, { 'Content-Type': 'application/json' }
-        print(location.address)
-        print((location.latitude, location.longitude))
-        lat = location.latitude
-        lon = location.longitude
-        print(location.raw)
+        lat = location['results'][0]['geometry']['location']['lat']
+        lon = location['results'][0]['geometry']['location']['lng']
         user = User(None,args['username'],password,tipe)
         db.session.add(user)
         db.session.commit()

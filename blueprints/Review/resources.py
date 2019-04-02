@@ -107,7 +107,6 @@ class ReviewResources(Resource):
         db.session.add(review)
         db.session.commit()
         return {'status': 'OK', 'message':"Anda berhasil menambahkan review untuk tentor ini", 'client': marshal(murid, Clients.respon_fields), 'data': marshal(review, Reviews.respon_fields)}, 200, { 'Content-Type': 'application/json' }
-
     def patch(self):
         return 'Not yet implement', 501
 

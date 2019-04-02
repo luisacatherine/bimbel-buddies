@@ -28,20 +28,18 @@ class TentorResource(Resource):
         parser.add_argument('nama', location='json', required=True),
         parser.add_argument('jalan', location='json', required=True),
         parser.add_argument('kota', location='json', required=True),
-        parser.add_argument('kelurahan', location='json'),
         parser.add_argument('ktp', location='json', required=True),
         parser.add_argument('phone', location='json', required=True),
         parser.add_argument('image', location='json'),
         parser.add_argument('tgl_lahir', location='json', required=True),
         parser.add_argument('gender', location='json', required=True),
         parser.add_argument('fokus', location='json', required=True),
-        parser.add_argument('tingkat', location='json', required=True),
+        parser.add_argument('tingkat', location='json'),
         parser.add_argument('pendidikan', location='json', required=True),
         parser.add_argument('ket', location='json', required=True),
         parser.add_argument('rekening', location='json', required=True),
         parser.add_argument('pemilik_nasabah', location='json', required=True),
-        parser.add_argument('available', location='json', required=True),
-        parser.add_argument('range_jam', location='json', required=True),
+        parser.add_argument('available', location='json', required=True)
         args = parser.parse_args()#sudah jadi dictionary
 
         qry_user = User.query.filter_by(username=args['username']).first()
@@ -64,20 +62,13 @@ class TentorResource(Resource):
         password = hashlib.md5(args['password'].encode()).hexdigest()
         saldo = 0
         tipe = "tentor"
-        geolocator = Nominatim(user_agent="specify_your_app_name_here")
-        alamat=""
-        if args["kelurahan"] is not None:
-            alamat = "Jalan " + args["jalan"] +" "+ args["kelurahan"] +" Kota "+ args["kota"]
-        else:
-            alamat = "Jalan " + args["jalan"] +" Kota "+ args["kota"]
-        location = geolocator.geocode(alamat)
+        alamat = args["jalan"] + " " + args["kota"]
+        response = requests.get("https://maps.googleapis.com/maps/api/geocode/json?address=" + alamat + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
+        location = response.json()
         if location is None:
             return {'message':'alamat kurang yakin'} ,404, { 'Content-Type': 'application/json' }
-        print(location.address)
-        print((location.latitude, location.longitude))
-        lat = location.latitude
-        lon = location.longitude
-        print(location.raw)
+        lat = location['results'][0]['geometry']['location']['lat']
+        lon = location['results'][0]['geometry']['location']['lng']
         user = User(None,args['username'],password,tipe)
         db.session.add(user)
         db.session.commit()
@@ -102,13 +93,14 @@ class TentorResource(Resource):
         parser.add_argument('p', location='args', default=1)
         parser.add_argument('rp', location='args', default=5)
         parser.add_argument('mapel', location='args')
-        parser.add_argument('jarak', location='args', type=float)
+        parser.add_argument('jarak', location='args', type=int)
         parser.add_argument('tingkat', location='args', choices=['SD', 'SMP', 'SMA'])
         parser.add_argument('gender', location='args', choices=['laki-laki', 'perempuan'])
         parser.add_argument('jadwal', location='args')
         parser.add_argument('blocked', location='args', type=bool)
         parser.add_argument('sortby', location='args', choices=['rating', 'jarak'])
         args = parser.parse_args()
+        # return args['jarak']
         jwtClaims = get_jwt_claims()
         if (id == None):
             if jwtClaims['tipe'] == 'tentor':
@@ -159,20 +151,29 @@ class TentorResource(Resource):
                 #     qry = qry.order_by(Tentors.updated_at.desc())
 
 
-                
-                # if (args['jarak'] is not None):
-                #     if jwtClaims['tipe'] != 'client':
-                #         return {'status': 'UNAUTHORIZED'}, 401, { 'Content-Type': 'application/json' }
-                #     else:
-                #         murid = Clients.query.filter(Clients.user_id == jwtClaims['id']).first()
-                #         qry = qry.filter(Tentors.compute_jarak(Tentors.lat, Tentors.lon, murid.lat, murid.lon) < args['jarak'])
-                        
-
-                        # for tentor in qry:
-                            # if tentor.compute_jarak(tentor.lat, tentor.lon, murid.lat, murid.lon) <= args['jarak']:
-                            # qry = qry.filter((Tentors.compute_jarak(tentor.lat, tentor.lon, murid.lat, murid.lon)) <= args['jarak'])
-                            
-                        # return qry
+                if (args['jarak'] is not None):
+                    # return "tes"
+                    if jwtClaims['tipe'] != 'client':
+                        return {'status': 'UNAUTHORIZED'}, 401, { 'Content-Type': 'application/json' }
+                    else:
+                        murid = Clients.query.filter(Clients.user_id == jwtClaims['id']).first()
+                        tentors = Tentors.query
+                        distance = []
+                        for tentor in tentors:
+                            resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
+                            resp = resp.json()
+                            jarak = resp['rows'][0]['elements'][0]['distance']['text']
+                            angka = re.findall(r'([1-9]|\.)', jarak)
+                            angka = float(''.join(angka))
+                            satuan = re.findall(r'([a-z])', jarak)
+                            satuan = ''.join(satuan)
+                            if satuan == 'mi':
+                                angka = angka * 1609 / 1000
+                            if satuan == 'ft':
+                                angka = angka * 3048 / 10000
+                            if int(angka) > args['jarak']:
+                                distance.append(tentor.id)
+                        qry = qry.filter(Tentors.id.notin_(distance))
 
                 rows = []
                 for row in qry.limit(args['rp']).offset(offset).all():
