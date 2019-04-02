@@ -95,7 +95,7 @@ class BookingResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('tanggal', location='json')
         parser.add_argument('mapel', type=str, choices=['mat', 'fis', 'kim', 'bio'])
-        parser.add_argument('status', location='json', choices=['waiting', 'accepted', 'cancelled', 'done', 'not_accepted'])
+        parser.add_argument('status', location='json', choices=['waiting', 'requested', 'accepted', 'cancelled', 'done', 'not_accepted'])
         args = parser.parse_args()
         qry = Booking.query.get(id_booking)
 
@@ -125,7 +125,13 @@ class BookingResource(Resource):
             tentor = Tentors.query.filter(Tentors.user_id == jwtClaims['id']).first()
             murid = Clients.query.filter(Clients.id == qry.id_murid).first()
 
-            if args['status'] == 'accepted':
+            if args['status'] == 'requested':
+                qry.id_tentor = tentor.id
+
+            elif args['status'] == 'waiting':
+                qry.id_tentor = 0
+
+            elif args['status'] == 'accepted':
                 # Seleksi mentor by gender dan rating di react
                 qry.id_tentor = tentor.id
 

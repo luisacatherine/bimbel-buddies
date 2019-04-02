@@ -38,8 +38,7 @@ class TentorResource(Resource):
         parser.add_argument('pendidikan', location='json', required=True),
         parser.add_argument('ket', location='json', required=True),
         parser.add_argument('rekening', location='json', required=True),
-        parser.add_argument('pemilik_nasabah', location='json', required=True),
-        parser.add_argument('available', location='json', required=True)
+        parser.add_argument('pemilik_nasabah', location='json', required=True)
         args = parser.parse_args()#sudah jadi dictionary
 
         qry_user = User.query.filter_by(username=args['username']).first()
@@ -222,15 +221,12 @@ class TentorResource(Resource):
         parser.add_argument('ket', location='json', default=temp1["ket"]),
         parser.add_argument('rekening', location='json', default=temp1["rekening"]),
         parser.add_argument('pemilik_nasabah', location='json', default=temp1["pemilik_nasabah"]),
-        parser.add_argument('range_jam', location='json', default=temp1["range_jam"]),
         args = parser.parse_args()
         
-        # if args['status'] != "merchant" and args['status'] != "customer":
-        #     return {'message':'only merchant or customer'},404, { 'Content-Type': 'application/json' }
 
         qry_user = User.query.get(id)
         qry_tentor = Tentors.query.filter_by(user_id=id).first()
-            # select * from where id = id
+
         if qry_user is not None and qry_tentor is not None:
             if (args["kota"] is not None and args["jalan"] is not None):
                 alamat = args["jalan"] + " " + args["kota"]
@@ -259,7 +255,6 @@ class TentorResource(Resource):
             qry_tentor.ket = args['ket']
             qry_tentor.rekening = args['rekening']
             qry_tentor.pemilik_nasabah = args['pemilik_nasabah']
-            qry_tentor.range_jam = args['range_jam']
             db.session.commit()
             return {"status":"OK", "message":"Updated", "data user":marshal(qry_user, User.respon_fields), "data tentor":marshal(qry_tentor, Tentors.respon_fields)}, 200, { 'Content-Type': 'application/json' }
         return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
