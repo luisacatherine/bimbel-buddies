@@ -1,99 +1,15 @@
-[2019-04-01 20:12:16,124] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
-Traceback (most recent call last):
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 462, in wrapper
-    return self.make_response(data, code, headers=headers)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 491, in make_response
-    resp = self.representations[mediatype](data, *args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/representations/json.py", line 21, in output_json
-    dumped = dumps(data, **settings) + "\n"
-  File "/usr/lib/python3.6/json/__init__.py", line 231, in dumps
-    return _default_encoder.encode(obj)
-  File "/usr/lib/python3.6/json/encoder.py", line 199, in encode
-    chunks = self.iterencode(o, _one_shot=True)
-  File "/usr/lib/python3.6/json/encoder.py", line 257, in iterencode
-    return _iterencode(o, 0)
-  File "/usr/lib/python3.6/json/encoder.py", line 180, in default
-    o.__class__.__name__)
-TypeError: Object of type 'Response' is not JSON serializable
-[2019-04-01 20:12:16,130] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
-[2019-04-01 20:13:01,727] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
-Traceback (most recent call last):
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
-    resp = resource(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
-    return self.dispatch_request(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
-    resp = meth(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
-    return fn(*args, **kwargs)
-  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 164, in get
-    jarak = resp['rows'][0]['elements'][0]['distance']['text']
-TypeError: 'Response' object is not subscriptable
-[2019-04-01 20:13:01,730] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
-[2019-04-01 20:13:15,542] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": "resp"} GET
-[2019-04-01 20:14:02,857] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"destination_addresses": ["Jl. Raya Tidar, Karangbesuki, Sukun, Kota Malang, Jawa Timur, Indonesia"], "origin_addresses": ["Jl. Raya Tidar, Karangbesuki, Sukun, Kota Malang, Jawa Timur, Indonesia"], "rows": [{"elements": [{"distance": {"text": "1 ft", "value": 0}, "duration": {"text": "1 min", "value": 0}, "status": "OK"}]}], "status": "OK"}} GET
-[2019-04-01 20:24:56,421] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"destination_addresses": ["Jl. Raya Tidar, Karangbesuki, Sukun, Kota Malang, Jawa Timur, Indonesia"], "origin_addresses": ["Jl. Raya Tidar, Karangbesuki, Sukun, Kota Malang, Jawa Timur, Indonesia"], "rows": [{"elements": [{"distance": {"text": "1 ft", "value": 0}, "duration": {"text": "1 min", "value": 0}, "status": "OK"}]}], "status": "OK"}} GET
-[2019-04-01 20:25:23,686] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"destination_addresses": ["Jl. Raya Tidar, Karangbesuki, Sukun, Kota Malang, Jawa Timur, Indonesia"], "origin_addresses": ["Jl. Raya Tidar, Karangbesuki, Sukun, Kota Malang, Jawa Timur, Indonesia"], "rows": [{"elements": [{"distance": {"text": "1 ft", "value": 0}, "duration": {"text": "1 min", "value": 0}, "status": "OK"}]}], "status": "OK"}} GET
-[2019-04-01 20:25:33,181] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
-Traceback (most recent call last):
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
-    resp = resource(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
-    return self.dispatch_request(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
-    resp = meth(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
-    return fn(*args, **kwargs)
-  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 172, in get
-    if satuan == mil:
-NameError: name 'mil' is not defined
-[2019-04-01 20:25:33,184] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
-[2019-04-01 20:25:48,977] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
-Traceback (most recent call last):
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
-    resp = resource(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
-    return self.dispatch_request(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
-    resp = meth(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
-    return fn(*args, **kwargs)
-  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 172, in get
-    if satuan == mil:
-NameError: name 'mil' is not defined
-[2019-04-01 20:25:48,983] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
-[2019-04-01 20:26:04,723] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": "tes"} GET
-[2019-04-01 20:27:27,466] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
-Traceback (most recent call last):
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
-    resp = resource(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
-    return self.dispatch_request(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
-    resp = meth(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
-    return fn(*args, **kwargs)
-  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 173, in get
-    if satuan == mil:
-NameError: name 'mil' is not defined
-[2019-04-01 20:27:27,471] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
+
+[2019-03-31 13:09:08,090] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:30"}, "response": {"id": 1, "client_id": 1, "tentor_id": 1, "booking_id": 11, "schedule_start": "Sat, 30 Mar 2019 19:00:00 -0000", "schedule_end": "Sat, 30 Mar 2019 20:30:00 -0000", "status": "waiting", "created_at": "Sun, 31 Mar 2019 12:27:21 -0000", "updated_at": "Sun, 31 Mar 2019 12:27:21 -0000"}} GET
+[2019-03-31 13:09:28,044] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:30"}, "response": {"id": 0, "client_id": 0, "tentor_id": 0, "booking_id": 0, "schedule_start": null, "schedule_end": null, "status": null, "created_at": null, "updated_at": null}} GET
+[2019-03-31 13:11:09,796] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:30"}, "response": [{"id": 1, "client_id": 1, "tentor_id": 1, "booking_id": 11, "schedule_start": "Sat, 30 Mar 2019 19:00:00 -0000", "schedule_end": "Sat, 30 Mar 2019 20:30:00 -0000", "status": "waiting", "created_at": "Sun, 31 Mar 2019 12:27:21 -0000", "updated_at": "Sun, 31 Mar 2019 12:27:21 -0000"}, {"id": 2, "client_id": 1, "tentor_id": 1, "booking_id": 11, "schedule_start": "Sat, 30 Mar 2019 19:00:00 -0000", "schedule_end": "Sat, 30 Mar 2019 20:30:00 -0000", "status": "waiting", "created_at": "Sun, 31 Mar 2019 12:28:44 -0000", "updated_at": "Sun, 31 Mar 2019 12:28:44 -0000"}]} GET
+[2019-03-31 13:12:00,283] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:30"}, "response": [{"id": 1, "client_id": 1, "tentor_id": 1, "booking_id": 11, "schedule_start": "Sat, 30 Mar 2019 19:00:00 -0000", "schedule_end": "Sat, 30 Mar 2019 20:30:00 -0000", "status": "waiting", "created_at": "Sun, 31 Mar 2019 12:27:21 -0000", "updated_at": "Sun, 31 Mar 2019 12:27:21 -0000"}]} GET
+[2019-03-31 13:12:45,889] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:30"}, "response": [{"id": 1, "client_id": 1, "tentor_id": 1, "booking_id": 11, "schedule_start": "Sat, 30 Mar 2019 19:00:00 -0000", "schedule_end": "Sat, 30 Mar 2019 20:30:00 -0000", "status": "waiting", "created_at": "Sun, 31 Mar 2019 12:27:21 -0000", "updated_at": "Sun, 31 Mar 2019 12:27:21 -0000"}, {"id": 2, "client_id": 1, "tentor_id": 1, "booking_id": 11, "schedule_start": "Sat, 30 Mar 2019 18:00:00 -0000", "schedule_end": "Sat, 30 Mar 2019 19:30:00 -0000", "status": "waiting", "created_at": "Sun, 31 Mar 2019 12:28:44 -0000", "updated_at": "Sun, 31 Mar 2019 12:28:44 -0000"}]} GET
+[2019-03-31 13:13:06,001] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:45"}, "response": [{"id": 1, "client_id": 1, "tentor_id": 1, "booking_id": 11, "schedule_start": "Sat, 30 Mar 2019 19:00:00 -0000", "schedule_end": "Sat, 30 Mar 2019 20:30:00 -0000", "status": "waiting", "created_at": "Sun, 31 Mar 2019 12:27:21 -0000", "updated_at": "Sun, 31 Mar 2019 12:27:21 -0000"}]} GET
+[2019-03-31 13:14:53,870] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:45"}, "response": [1]} GET
+[2019-03-31 13:15:20,086] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:15"}, "response": [1, 2]} GET
+[2019-03-31 13:16:29,007] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:15"}, "response": {"status": "oke", "tentors": [{"id": 1, "user_id": 3, "nama": "Tentor Satu", "address": "Jalan Sawojajar Sawojajar Kota Malang", "ktp": "3204094902950003", "phone": "08912131232", "image": "https://hellosehat.com/wp-content/uploads/2018/01/4-Alasan-Jangan-Jadi-Terlalu-Baik-Sama-Orang-Lain.jpg", "tgl_lahir": "Thu, 05 Mar 1998 00:00:00 -0000", "gender": "perempuan", "fokus": "mat", "tingkat": "SMA", "pendidikan": "S1", "ket": "freelance", "rekening": "9121331431", "pemilik_nasabah": "Test Tentor", "available": "Senin, Selasa, Sabtu", "range_jam": "09.00 - 18.00", "saldo": 21100, "rating": 0.0, "qty_rating": 0, "lat": -7.97576, "lon": 112.647, "status": "active", "created_at": "Sat, 30 Mar 2019 13:58:12 -0000", "updated_at": "Sat, 30 Mar 2019 13:58:12 -0000", "user": {"id": 3, "username": "testtentor", "password": "2ac9cb7dc02b3c0083eb70898e549b63", "tipe": "tentor"}}, {"id": 3, "user_id": 5, "nama": "Tentor Satu", "address": "Jalan Sawojajar Sawojajar Kota Malang", "ktp": "3204094902950003", "phone": "08912131232", "image": "https://hellosehat.com/wp-content/uploads/2018/01/4-Alasan-Jangan-Jadi-Terlalu-Baik-Sama-Orang-Lain.jpg", "tgl_lahir": "Thu, 05 Mar 1998 00:00:00 -0000", "gender": "perempuan", "fokus": "mat", "tingkat": "SMA", "pendidikan": "S1", "ket": "freelance", "rekening": "9121331431", "pemilik_nasabah": "Test Tentor", "available": "Senin, Selasa, Sabtu", "range_jam": "09.00 - 18.00", "saldo": 0, "rating": 0.0, "qty_rating": 0, "lat": -7.97576, "lon": 112.647, "status": "active", "created_at": "Sat, 30 Mar 2019 18:58:28 -0000", "updated_at": "Sat, 30 Mar 2019 18:58:28 -0000", "user": {"id": 5, "username": "testtentor3", "password": "2ac9cb7dc02b3c0083eb70898e549b63", "tipe": "admin"}}]}} GET
+[2019-03-31 13:20:35,080] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:15"}, "response": {"status": "oke", "tentors": []}} GET
+[2019-03-31 13:20:39,870] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "jadwal": "2019-03-30 19:15"}, "response": {"status": "oke", "tentors": []}} GET
+[2019-03-31 13:20:44,694] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jadwal": "2019-03-30 19:15"}, "response": {"status": "oke", "tentors": []}} GET
+[2019-03-31 13:21:16,060] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jadwal": "2019-03-30 19:15"}, "response": {"status": "oke", "tentors": []}} GET
+[2019-03-31 13:21:44,534] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jadwal": "2019-03-30 19:15"}, "response": {"status": "oke", "tentors": []}} GET

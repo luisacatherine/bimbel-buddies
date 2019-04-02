@@ -1,93 +1,13 @@
-[2019-04-01 20:08:53,586] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
-Traceback (most recent call last):
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
-    resp = resource(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
-    return self.dispatch_request(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
-    resp = meth(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
-    return fn(*args, **kwargs)
-  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 162, in get
-    jarak = resp['rows'][0]['elements'][0]['distance']['text']
-TypeError: string indices must be integers
-[2019-04-01 20:08:53,600] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
-[2019-04-01 20:09:07,458] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": "tes"} GET
-[2019-04-01 20:09:20,332] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
-Traceback (most recent call last):
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
-    resp = resource(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
-    return self.dispatch_request(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
-    resp = meth(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
-    return fn(*args, **kwargs)
-  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 163, in get
-    jarak = resp['rows'][0]['elements'][0]['distance']['text']
-TypeError: string indices must be integers
-[2019-04-01 20:09:20,336] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
-[2019-04-01 20:09:36,719] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": "tes"} GET
-[2019-04-01 20:09:56,882] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
-Traceback (most recent call last):
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
-    resp = resource(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
-    return self.dispatch_request(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
-    resp = meth(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
-    return fn(*args, **kwargs)
-  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 164, in get
-    jarak = resp['rows'][0]['elements'][0]['distance']['text']
-TypeError: string indices must be integers
-[2019-04-01 20:09:56,885] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
-[2019-04-01 20:10:11,513] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
-Traceback (most recent call last):
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
-    resp = resource(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
-    return self.dispatch_request(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
-    resp = meth(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
-    return fn(*args, **kwargs)
-  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 164, in get
-    jarak = resp['rows'][0]['elements'][0]['distance']['text']
-TypeError: string indices must be integers
-[2019-04-01 20:10:11,515] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
-[2019-04-01 20:10:32,073] {/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py:1761} ERROR - Exception on /tentor [GET]
-Traceback (most recent call last):
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
-    return self.view_functions[rule.endpoint](**req.view_args)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 458, in wrapper
-    resp = resource(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask/views.py", line 88, in view
-    return self.dispatch_request(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_restful/__init__.py", line 573, in dispatch_request
-    resp = meth(*args, **kwargs)
-  File "/home/alphatech/.local/lib/python3.6/site-packages/flask_jwt_extended/view_decorators.py", line 104, in wrapper
-    return fn(*args, **kwargs)
-  File "/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/tentor/resources.py", line 164, in get
-    jarak = resp['rows'][0]['elements'][0]['distance']['text']
-TypeError: string indices must be integers
-[2019-04-01 20:10:32,075] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": {"message": "Internal Server Error"}} GET
-[2019-04-01 20:11:29,706] {/home/alphatech/Documents/Tugas_ATA_Batch2_Aswin/Last_Final/Last_Week/bimbel-buddies/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"jarak": "5"}, "response": "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=Jalan Tidar Karang Besuki Kota Malang&destinations=Jalan Tidar Karang Besuki Kota Malang&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg"} GET
+
+[2019-03-31 12:36:42,300] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan"}, "response": {"status": "oke", "tentors": [{"id": 1, "user_id": 3, "nama": "Tentor Satu", "address": "Jalan Sawojajar Sawojajar Kota Malang", "ktp": "3204094902950003", "phone": "08912131232", "image": "https://hellosehat.com/wp-content/uploads/2018/01/4-Alasan-Jangan-Jadi-Terlalu-Baik-Sama-Orang-Lain.jpg", "tgl_lahir": "Thu, 05 Mar 1998 00:00:00 -0000", "gender": "perempuan", "fokus": "mat", "tingkat": "SMA", "pendidikan": "S1", "ket": "freelance", "rekening": "9121331431", "pemilik_nasabah": "Test Tentor", "available": "Senin, Selasa, Sabtu", "range_jam": "09.00 - 18.00", "saldo": 21100, "rating": 0.0, "qty_rating": 0, "lat": -7.97576, "lon": 112.647, "status": "active", "created_at": "Sat, 30 Mar 2019 13:58:12 -0000", "updated_at": "Sat, 30 Mar 2019 13:58:12 -0000", "user": {"id": 3, "username": "testtentor", "password": "2ac9cb7dc02b3c0083eb70898e549b63", "tipe": "tentor"}}, {"id": 3, "user_id": 5, "nama": "Tentor Satu", "address": "Jalan Sawojajar Sawojajar Kota Malang", "ktp": "3204094902950003", "phone": "08912131232", "image": "https://hellosehat.com/wp-content/uploads/2018/01/4-Alasan-Jangan-Jadi-Terlalu-Baik-Sama-Orang-Lain.jpg", "tgl_lahir": "Thu, 05 Mar 1998 00:00:00 -0000", "gender": "perempuan", "fokus": "mat", "tingkat": "SMA", "pendidikan": "S1", "ket": "freelance", "rekening": "9121331431", "pemilik_nasabah": "Test Tentor", "available": "Senin, Selasa, Sabtu", "range_jam": "09.00 - 18.00", "saldo": 0, "rating": 0.0, "qty_rating": 0, "lat": -7.97576, "lon": 112.647, "status": "active", "created_at": "Sat, 30 Mar 2019 18:58:28 -0000", "updated_at": "Sat, 30 Mar 2019 18:58:28 -0000", "user": {"id": 5, "username": "testtentor3", "password": "2ac9cb7dc02b3c0083eb70898e549b63", "tipe": "admin"}}]}} GET
+[2019-03-31 12:59:12,205] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 20:00"}, "response": {"message": {"jadwal": "an integer is required (got type str)"}}} GET
+[2019-03-31 13:01:19,244] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 20:00"}, "response": {"status": "oke", "tentors": [{"id": 1, "user_id": 3, "nama": "Tentor Satu", "address": "Jalan Sawojajar Sawojajar Kota Malang", "ktp": "3204094902950003", "phone": "08912131232", "image": "https://hellosehat.com/wp-content/uploads/2018/01/4-Alasan-Jangan-Jadi-Terlalu-Baik-Sama-Orang-Lain.jpg", "tgl_lahir": "Thu, 05 Mar 1998 00:00:00 -0000", "gender": "perempuan", "fokus": "mat", "tingkat": "SMA", "pendidikan": "S1", "ket": "freelance", "rekening": "9121331431", "pemilik_nasabah": "Test Tentor", "available": "Senin, Selasa, Sabtu", "range_jam": "09.00 - 18.00", "saldo": 21100, "rating": 0.0, "qty_rating": 0, "lat": -7.97576, "lon": 112.647, "status": "active", "created_at": "Sat, 30 Mar 2019 13:58:12 -0000", "updated_at": "Sat, 30 Mar 2019 13:58:12 -0000", "user": {"id": 3, "username": "testtentor", "password": "2ac9cb7dc02b3c0083eb70898e549b63", "tipe": "tentor"}}, {"id": 3, "user_id": 5, "nama": "Tentor Satu", "address": "Jalan Sawojajar Sawojajar Kota Malang", "ktp": "3204094902950003", "phone": "08912131232", "image": "https://hellosehat.com/wp-content/uploads/2018/01/4-Alasan-Jangan-Jadi-Terlalu-Baik-Sama-Orang-Lain.jpg", "tgl_lahir": "Thu, 05 Mar 1998 00:00:00 -0000", "gender": "perempuan", "fokus": "mat", "tingkat": "SMA", "pendidikan": "S1", "ket": "freelance", "rekening": "9121331431", "pemilik_nasabah": "Test Tentor", "available": "Senin, Selasa, Sabtu", "range_jam": "09.00 - 18.00", "saldo": 0, "rating": 0.0, "qty_rating": 0, "lat": -7.97576, "lon": 112.647, "status": "active", "created_at": "Sat, 30 Mar 2019 18:58:28 -0000", "updated_at": "Sat, 30 Mar 2019 18:58:28 -0000", "user": {"id": 5, "username": "testtentor3", "password": "2ac9cb7dc02b3c0083eb70898e549b63", "tipe": "admin"}}]}} GET
+[2019-03-31 13:05:19,177] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 20:00"}, "response": {"status": "oke", "tentors": [{"id": 1, "user_id": 3, "nama": "Tentor Satu", "address": "Jalan Sawojajar Sawojajar Kota Malang", "ktp": "3204094902950003", "phone": "08912131232", "image": "https://hellosehat.com/wp-content/uploads/2018/01/4-Alasan-Jangan-Jadi-Terlalu-Baik-Sama-Orang-Lain.jpg", "tgl_lahir": "Thu, 05 Mar 1998 00:00:00 -0000", "gender": "perempuan", "fokus": "mat", "tingkat": "SMA", "pendidikan": "S1", "ket": "freelance", "rekening": "9121331431", "pemilik_nasabah": "Test Tentor", "available": "Senin, Selasa, Sabtu", "range_jam": "09.00 - 18.00", "saldo": 21100, "rating": 0.0, "qty_rating": 0, "lat": -7.97576, "lon": 112.647, "status": "active", "created_at": "Sat, 30 Mar 2019 13:58:12 -0000", "updated_at": "Sat, 30 Mar 2019 13:58:12 -0000", "user": {"id": 3, "username": "testtentor", "password": "2ac9cb7dc02b3c0083eb70898e549b63", "tipe": "tentor"}}, {"id": 3, "user_id": 5, "nama": "Tentor Satu", "address": "Jalan Sawojajar Sawojajar Kota Malang", "ktp": "3204094902950003", "phone": "08912131232", "image": "https://hellosehat.com/wp-content/uploads/2018/01/4-Alasan-Jangan-Jadi-Terlalu-Baik-Sama-Orang-Lain.jpg", "tgl_lahir": "Thu, 05 Mar 1998 00:00:00 -0000", "gender": "perempuan", "fokus": "mat", "tingkat": "SMA", "pendidikan": "S1", "ket": "freelance", "rekening": "9121331431", "pemilik_nasabah": "Test Tentor", "available": "Senin, Selasa, Sabtu", "range_jam": "09.00 - 18.00", "saldo": 0, "rating": 0.0, "qty_rating": 0, "lat": -7.97576, "lon": 112.647, "status": "active", "created_at": "Sat, 30 Mar 2019 18:58:28 -0000", "updated_at": "Sat, 30 Mar 2019 18:58:28 -0000", "user": {"id": 5, "username": "testtentor3", "password": "2ac9cb7dc02b3c0083eb70898e549b63", "tipe": "admin"}}]}} GET
+[2019-03-31 13:05:39,068] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 20:00"}, "response": {"id": 1, "client_id": 1, "tentor_id": 1, "booking_id": 11, "schedule_start": "Sat, 30 Mar 2019 19:00:00 -0000", "schedule_end": "Sat, 30 Mar 2019 20:30:00 -0000", "status": "waiting", "created_at": "Sun, 31 Mar 2019 12:27:21 -0000", "updated_at": "Sun, 31 Mar 2019 12:27:21 -0000"}} GET
+[2019-03-31 13:05:50,766] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 16:00"}, "response": {"id": 0, "client_id": 0, "tentor_id": 0, "booking_id": 0, "schedule_start": null, "schedule_end": null, "status": null, "created_at": null, "updated_at": null}} GET
+[2019-03-31 13:05:56,195] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 18:00"}, "response": {"id": 1, "client_id": 1, "tentor_id": 1, "booking_id": 11, "schedule_start": "Sat, 30 Mar 2019 19:00:00 -0000", "schedule_end": "Sat, 30 Mar 2019 20:30:00 -0000", "status": "waiting", "created_at": "Sun, 31 Mar 2019 12:27:21 -0000", "updated_at": "Sun, 31 Mar 2019 12:27:21 -0000"}} GET
+[2019-03-31 13:07:05,375] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 18:00"}, "response": {"id": 0, "client_id": 0, "tentor_id": 0, "booking_id": 0, "schedule_start": null, "schedule_end": null, "status": null, "created_at": null, "updated_at": null}} GET
+[2019-03-31 13:07:58,065] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:00"}, "response": {"id": 0, "client_id": 0, "tentor_id": 0, "booking_id": 0, "schedule_start": null, "schedule_end": null, "status": null, "created_at": null, "updated_at": null}} GET
+[2019-03-31 13:08:12,003] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:30"}, "response": {"id": 0, "client_id": 0, "tentor_id": 0, "booking_id": 0, "schedule_start": null, "schedule_end": null, "status": null, "created_at": null, "updated_at": null}} GET
+[2019-03-31 13:08:36,590] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:30"}, "response": {"id": 1, "client_id": 1, "tentor_id": 1, "booking_id": 11, "schedule_start": "Sat, 30 Mar 2019 19:00:00 -0000", "schedule_end": "Sat, 30 Mar 2019 20:30:00 -0000", "status": "waiting", "created_at": "Sun, 31 Mar 2019 12:27:21 -0000", "updated_at": "Sun, 31 Mar 2019 12:27:21 -0000"}} GET
+[2019-03-31 13:08:51,248] {/home/alphatech/Documents/bimbel-buddies/env-bimbel/project/blueprints/__init__.py:40} WARNING - REQUEST_LOG	{"request": {"tingkat": "SD", "jarak": "0", "gender": "perempuan", "jadwal": "2019-03-30 19:30"}, "response": {"id": 0, "client_id": 0, "tentor_id": 0, "booking_id": 0, "schedule_start": null, "schedule_end": null, "status": null, "created_at": null, "updated_at": null}} GET
