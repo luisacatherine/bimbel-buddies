@@ -107,6 +107,7 @@ class TentorResource(Resource):
         parser.add_argument('gender', location='args', choices=['laki-laki', 'perempuan'])
         parser.add_argument('jadwal', location='args')
         parser.add_argument('blocked', location='args', type=bool)
+        parser.add_argument('sortby', location='args', choices=['rating', 'jarak'])
         args = parser.parse_args()
         jwtClaims = get_jwt_claims()
         if (id == None):
@@ -151,6 +152,12 @@ class TentorResource(Resource):
                     for data in qry_blocked:
                         blocked.append(data.blocked_tentor)
                     qry = qry.filter(Tentors.id.notin_(blocked))
+                
+                if args['sortby'] == 'rating':
+                    qry = qry.order_by(Tentors.rating.desc())
+                # elif args['sortby'] == 'jarak':
+                #     qry = qry.order_by(Tentors.updated_at.desc())
+
 
                 
                 # if (args['jarak'] is not None):
