@@ -36,7 +36,6 @@ class ClientResource(Resource):
         qry_user = User.query.filter_by(username=args['username']).first()
         if qry_user is not None:
             return {'message':'username is already used'} ,404, { 'Content-Type': 'application/json' }
-        # password = "Azril7812"
         created_at = datetime.now()
         updated_at = datetime.now()
         password = args['password']
@@ -59,8 +58,7 @@ class ClientResource(Resource):
         db.session.add(user)
         db.session.commit()
         client = Clients(None,user.id,args['nama'],alamat,args['phone'],args['image'],
-        args['tgl_lahir'],args['gender'],args['tingkat'],args['gender_tentor'],args['ortu'],
-        saldo,lat,lon,created_at,updated_at)
+        args['tgl_lahir'],args['gender'],args['tingkat'],saldo,lat,lon,created_at,updated_at)
         db.session.add(client)
         db.session.commit()
 
@@ -128,9 +126,6 @@ class ClientResource(Resource):
         parser.add_argument('gender_tentor', location='json' , default=temp1["gender_tentor"]),
         parser.add_argument('ortu', location='json' , default=temp1["ortu"])
         args = parser.parse_args()
-        
-        # if args['status'] != "merchant" and args['status'] != "customer":
-        #     return {'message':'only merchant or customer'},404, { 'Content-Type': 'application/json' }
 
         qry_user = User.query.get(id)
         qry_client = Clients.query.filter_by(user_id=id).first()

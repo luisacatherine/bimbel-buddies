@@ -28,7 +28,7 @@ class BookingResource(Resource):
             parser.add_argument('id_tentor', type=int, location='args')
             parser.add_argument('id_murid', type=int, location='args')
             parser.add_argument('tanggal', location='args')
-            parser.add_argument('status', type=str, location='args', choices=['waiting', 'accepted', 'cancelled', 'not_accepted'])
+            parser.add_argument('status', type=str, location='args', choices=['waiting', 'requested', 'accepted', 'cancelled', 'not_accepted'])
             parser.add_argument('mapel', type=str, choices=['mat', 'fis', 'kim', 'bio'])
             args = parser.parse_args()
             offset = (args['p'] * args['rp']) - args['rp']

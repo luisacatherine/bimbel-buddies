@@ -100,7 +100,6 @@ class TentorResource(Resource):
         parser.add_argument('blocked', location='args', type=bool)
         parser.add_argument('sortby', location='args', choices=['rating', 'jarak'])
         args = parser.parse_args()
-        # return args['jarak']
         jwtClaims = get_jwt_claims()
         if (id == None):
             if jwtClaims['tipe'] == 'tentor':

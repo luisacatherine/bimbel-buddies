@@ -26,8 +26,6 @@ class Clients(db.Model):
     respon_fields = {
         'id': fields.Integer,
         'user_id': fields.Integer,
-        # 'username' : fields.String,
-        # 'password' : fields.String,
         'nama' : fields.String,
         'address' : fields.String,
         'phone' : fields.String,
@@ -36,7 +34,6 @@ class Clients(db.Model):
         'gender' : fields.String,
         'tingkat' : fields.String,
         'saldo': fields.Integer,
-        # 'tipe' : fields.String,
         'lat' : fields.Float,
         'lon' : fields.Float,
         'created_at' : fields.DateTime,
