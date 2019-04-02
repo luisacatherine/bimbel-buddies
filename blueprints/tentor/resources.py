@@ -93,11 +93,12 @@ class TentorResource(Resource):
         parser.add_argument('p', location='args', default=1)
         parser.add_argument('rp', location='args', default=5)
         parser.add_argument('mapel', location='args')
-        parser.add_argument('jarak', location='args', type=int)
+        parser.add_argument('jarak', location='args', type=float)
         parser.add_argument('tingkat', location='args', choices=['SD', 'SMP', 'SMA'])
         parser.add_argument('gender', location='args', choices=['laki-laki', 'perempuan'])
         parser.add_argument('jadwal', location='args')
         parser.add_argument('blocked', location='args', type=bool)
+        parser.add_argument('sortby', location='args', choices=['rating', 'pendidikan'])
         args = parser.parse_args()
         # return args['jarak']
         jwtClaims = get_jwt_claims()
@@ -152,6 +153,7 @@ class TentorResource(Resource):
                         murid = Clients.query.filter(Clients.user_id == jwtClaims['id']).first()
                         tentors = Tentors.query
                         distance = []
+                        jarak = []
                         for tentor in tentors:
                             resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
                             resp = resp.json()
@@ -164,9 +166,16 @@ class TentorResource(Resource):
                                 angka = angka * 1609 / 1000
                             if satuan == 'ft':
                                 angka = angka * 3048 / 10000
-                            if int(angka) > args['jarak']:
+                            if angka > args['jarak']:
                                 distance.append(tentor.id)
+                                jarak.append(angka)
                         qry = qry.filter(Tentors.id.notin_(distance))
+                
+                if args['sortby'] == 'rating':
+                    qry = qry.order_by(Tentors.rating.desc())
+
+                elif args['sortby'] == 'pendidikan':
+                    qry = qry.order_by(Tentors.pendidikan.desc())
 
                 rows = []
                 for row in qry.limit(args['rp']).offset(offset).all():
