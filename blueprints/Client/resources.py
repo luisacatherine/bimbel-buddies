@@ -62,7 +62,7 @@ class ClientResource(Resource):
         db.session.add(client)
         db.session.commit()
 
-        return {"status": "OK", "data user": marshal(user, User.respon_fields), "data client": marshal(client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+        return {"status": "OK", "data_user": marshal(user, User.respon_fields), "data_client": marshal(client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
 
     @jwt_required
     def get(self, id=None):
@@ -77,7 +77,7 @@ class ClientResource(Resource):
                 qry_user = User.query.get(id)
                 qry_client = Clients.query.filter_by(user_id=id).first()
                 if qry_user is not None and qry_client is not None:
-                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+                    return {"status": "OK", "data_user": marshal(qry_user, User.respon_fields), "data_client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
                 return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
             else:
                 offset = (args['p'] * args['rp']) - args['rp']
@@ -95,13 +95,13 @@ class ClientResource(Resource):
                 qry_user = User.query.get(id)
                 qry_client = Clients.query.filter_by(user_id=id).first()
                 if qry_user is not None and qry_client is not None:
-                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+                    return {"status": "OK", "data_user": marshal(qry_user, User.respon_fields), "data_client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
                 return {'status': 'NOT_FOUND','message':'user not found'}, 404, { 'Content-Type': 'application/json' }
             else:
                 qry_client = Clients.query.get(id)
                 qry_user = User.query.get(qry_client.user_id)
                 if qry_user is not None and qry_client is not None:
-                    return {"status": "OK", "data user": marshal(qry_user, User.respon_fields), "data client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
+                    return {"status": "OK", "data_user": marshal(qry_user, User.respon_fields), "data_client": marshal(qry_client, Clients.respon_fields)},200, { 'Content-Type': 'application/json' }
                 return {'status': 'NOT_FOUND','message':'user not found'}, 404, { 'Content-Type': 'application/json' }
     
     @jwt_required
@@ -162,7 +162,7 @@ class ClientResource(Resource):
             qry_client.gender_tentor = args['gender_tentor']
             qry_client.ortu = args['ortu']
             db.session.commit()
-            return {"status":"OK", "message":"Updated", "data user":marshal(qry_user, User.respon_fields), "data client":marshal(qry_client, Clients.respon_fields)}, 200, { 'Content-Type': 'application/json' }
+            return {"status":"OK", "message":"Updated", "data_user":marshal(qry_user, User.respon_fields), "data_client":marshal(qry_client, Clients.respon_fields)}, 200, { 'Content-Type': 'application/json' }
         return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
 
     @jwt_required
@@ -173,7 +173,7 @@ class ClientResource(Resource):
         if qry_user is not None:
             qry_user.tipe = "unavailable"
             db.session.commit()
-            return {"status":"OK", "message":"Deleted", "data user":marshal(qry_user, User.respon_fields), "data client":marshal(qry_client, Clients.respon_fields)}, 200, { 'Content-Type': 'application/json' }
+            return {"status":"OK", "message":"Deleted", "data_user":marshal(qry_user, User.respon_fields), "data_client":marshal(qry_client, Clients.respon_fields)}, 200, { 'Content-Type': 'application/json' }
         return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
 
     def patch(self):

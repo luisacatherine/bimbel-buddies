@@ -1,4 +1,4 @@
-import logging
+import logging, requests, re
 import json
 from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, marshal
@@ -94,10 +94,12 @@ class BookingResource(Resource):
             qry_tentor = Tentors.query.filter(Tentors.user_id == jwtClaims['id']).first()
         parser = reqparse.RequestParser()
         parser.add_argument('tanggal', location='json')
+        parser.add_argument('id_tentor', location='json', type=int)
         parser.add_argument('mapel', type=str, choices=['mat', 'fis', 'kim', 'bio'])
         parser.add_argument('status', location='json', choices=['waiting', 'requested', 'accepted', 'cancelled', 'done', 'not_accepted'])
         args = parser.parse_args()
         qry = Booking.query.get(id_booking)
+        
 
         if args['tanggal'] is not None:
             if jwtClaims['tipe'] != 'client' and qry.id_murid != qry_murid.id:
@@ -117,23 +119,28 @@ class BookingResource(Resource):
             db.session.delete(qry_jadwal)
             db.session.commit()
 
-        
+
         if args['mapel'] is not None:
             qry.mapel = args['mapel']
         
         if args['status'] is not None:
-            tentor = Tentors.query.filter(Tentors.user_id == jwtClaims['id']).first()
+            if jwtClaims['tipe'] == 'tentor':
+                tentor = Tentors.query.filter(Tentors.user_id == jwtClaims['id']).first()
+            if jwtClaims['tipe'] == 'client':
+                tentor = Tentors.query.filter(Tentors.user_id == args['id_tentor']).first()
             murid = Clients.query.filter(Clients.id == qry.id_murid).first()
 
             if args['status'] == 'requested':
-                qry.id_tentor = tentor.id
+                qry.id_tentor = args['id_tentor']
 
             elif args['status'] == 'waiting':
                 qry.id_tentor = 0
 
             elif args['status'] == 'accepted':
+                # return qry.id_tentor
                 # Seleksi mentor by gender dan rating di react
                 qry.id_tentor = tentor.id
+                # return "tes"
 
                 # Hitung jarak antara tentor dan murid
                 resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
@@ -148,7 +155,7 @@ class BookingResource(Resource):
                 if satuan == 'ft':
                     angka = angka * 3048 / 10000
                 jarak_tentor = angka
-                
+                # return "tes"
                 # Tambahkan harga bensin
                 qry.harga_bensin += 700 * jarak_tentor
                 murid.saldo -= (qry.harga_bensin + qry.harga_booking)
@@ -160,31 +167,38 @@ class BookingResource(Resource):
                 db.session.commit()
 
             elif args['status'] == 'cancelled':
-                # Saldo murid ditambah
-                murid.saldo += (qry.harga_booking + qry.harga_bensin)
                 qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
                 db.session.delete(qry_jadwal)
                 db.session.commit()
 
                 # Kalau masih j-6
                 if datetime.now() + timedelta(hours=6) < qry.tanggal:
+                    murid.saldo += (qry.harga_booking + qry.harga_bensin)
                     qry.saldo_admin -= (qry.harga_booking + qry.harga_bensin)
                     qry.harga_booking = 0
                     qry.harga_bensin = 0
 
                 # Kalau sudah mepet
                 else:
-                    qry.saldo_tentor -= 0.5 * qry.harga_booking
-                    tentor.saldo += qry.saldo_tentor
-                    qry.saldo_admin -= (0.5 * qry.harga_booking + qry.harga_bensin)
-                    qry.harga_booking = 0
-                    qry.harga_bensin = 0
+                    if jwtClaims['tipe'] == 'tentor':
+                        murid.saldo += (qry.harga_booking + qry.harga_bensin)
+                        qry.saldo_tentor -= 0.5 * qry.harga_booking
+                        tentor.saldo += qry.saldo_tentor
+                        qry.saldo_admin -= (0.5 * qry.harga_booking + qry.harga_bensin)
+                        qry.harga_booking = 0
+                        qry.harga_bensin = 0
+
+                    elif jwtClaims['tipe'] == 'client':
+                        murid.saldo += (0.5 * qry.harga_booking + qry.harga_bensin)
+                        qry.saldo_admin -= (0.5 * qry.harga_booking + qry.harga_bensin)
+                        qry.harga_booking = 0
+                        qry.harga_bensin = 0
+
             
             elif args['status'] == 'done':
                 qry.saldo_tentor = 0.8 * qry.harga_booking + qry.harga_bensin
                 tentor.saldo += qry.saldo_tentor
                 qry.saldo_admin -= (0.8 * qry.harga_booking + qry.harga_bensin)
-                      
             qry.status = args['status']
 
         db.session.commit()
