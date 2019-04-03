@@ -113,18 +113,16 @@ class ClientResource(Resource):
         temp1 = marshal(qry_client, Clients.respon_fields)
         parser = reqparse.RequestParser()
         parser.add_argument('username', location='json', default=temp["username"])
-        parser.add_argument('password', location='json', default=temp["password"])
+        parser.add_argument('password', location='json')
         parser.add_argument('nama', location='json' , default=temp1["nama"]),
         parser.add_argument('jalan', location='json'),
         parser.add_argument('kota', location='json'),
         parser.add_argument('kelurahan', location='json'),
         parser.add_argument('phone', location='json' , default=temp1["phone"]),
         parser.add_argument('image', location='json' , default=temp1["image"]),
-        parser.add_argument('tgl_lahir', location='json' , default=temp1["tgl_lahir"]),
+        parser.add_argument('tgl_lahir', location='json'),
         parser.add_argument('gender', location='json' , default=temp1["gender"]),
         parser.add_argument('tingkat', location='json' , default=temp1["tingkat"]),
-        parser.add_argument('gender_tentor', location='json' , default=temp1["gender_tentor"]),
-        parser.add_argument('ortu', location='json' , default=temp1["ortu"])
         args = parser.parse_args()
 
         qry_user = User.query.get(id)
@@ -132,35 +130,35 @@ class ClientResource(Resource):
             # select * from where id = id
         if qry_user is not None and qry_client is not None:
             if (args["kota"] is not None and args["jalan"] is not None):
-                geolocator = Nominatim(user_agent="specify_your_app_name_here")
-                alamat=""
-                if args["kelurahan"] is not None:
-                    alamat = "Jalan " + args["jalan"] +" "+ args["kelurahan"] +" Kota "+ args["kota"]
-                else:
-                    alamat = "Jalan " + args["jalan"] +" Kota "+ args["kota"]
-                location = geolocator.geocode(alamat)
+                alamat = args["jalan"] + " " + args["kota"]
+                response = requests.get("https://maps.googleapis.com/maps/api/geocode/json?address=" + alamat + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
+                location = response.json()
                 if location is None:
                     return {'message':'alamat kurang yakin'} ,404, { 'Content-Type': 'application/json' }
                 else:
-                    print(location.address)
-                    print((location.latitude, location.longitude))
-                    lat = location.latitude
-                    lon = location.longitude
-                    print(location.raw)
+                    lat = location['results'][0]['geometry']['location']['lat']
+                    lon = location['results'][0]['geometry']['location']['lng']
                     qry_client.address = alamat
                     qry_client.lat = lat
                     qry_client.lon = lon
             
             qry_user.username = args['username']
-            qry_user.password = args['password']
+            if args['password'] is not None:
+                password = args['password']
+                if re.match(r'((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})', password):
+                    print('match')
+                else:
+                    print('not match')
+                    return {'message':'password harus ada huruf besar, kecil dan angka'} ,404, { 'Content-Type': 'application/json' }
+                password = hashlib.md5(args['password'].encode()).hexdigest()
+                qry_user.password = password
             qry_client.nama = args['nama']
             qry_client.phone = args['phone']
             qry_client.image = args['image']
-            qry_client.tgl_lahir = args['tgl_lahir']
+            if args['tgl_lahir'] is not None:
+                qry_client.tgl_lahir = args['tgl_lahir']
             qry_client.gender = args['gender']
             qry_client.tingkat = args['tingkat']
-            qry_client.gender_tentor = args['gender_tentor']
-            qry_client.ortu = args['ortu']
             db.session.commit()
             return {"status":"OK", "message":"Updated", "data_user":marshal(qry_user, User.respon_fields), "data_client":marshal(qry_client, Clients.respon_fields)}, 200, { 'Content-Type': 'application/json' }
         return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
