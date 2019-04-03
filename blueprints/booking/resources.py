@@ -232,6 +232,6 @@ class BookingResource(Resource):
         booking = Booking(None, id_murid, 0, args['jenis'], args['tanggal'], args['mapel'], 'waiting', harga_booking, 0, 0, 0, args['created_at'], args['updated_at'])
         db.session.add(booking)
         db.session.commit()        
-        return {'status': 'oke', 'booking': marshal(booking, Booking.response_fields)}, 200, {'Content-Type': 'application/json'}
+        return {'status': 'oke', 'booking': marshal(booking, Booking.response_fields), 'murid': marshal(murid, Clients.respon_fields)}, 200, {'Content-Type': 'application/json'}
 
 api.add_resource(BookingResource, '/<int:id_booking>', '')
