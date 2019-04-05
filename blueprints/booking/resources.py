@@ -4,6 +4,7 @@ from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, marshal
 from blueprints import db
 from . import *
+from blueprints.jadwal_client import *
 from sqlalchemy import Date, cast
 from flask_jwt_extended import get_jwt_claims, jwt_required
 from datetime import datetime, date, timedelta
@@ -24,7 +25,7 @@ class BookingResource(Resource):
         if (id_booking == None):
             parser = reqparse.RequestParser()
             parser.add_argument('p', type=int, location='args', default=1)
-            parser.add_argument('rp', type=int, location='args', default=5)
+            parser.add_argument('rp', type=int, location='args', default=100)
             parser.add_argument('id_tentor', type=int, location='args')
             parser.add_argument('id_murid', type=int, location='args')
             parser.add_argument('tanggal', location='args')
@@ -55,6 +56,7 @@ class BookingResource(Resource):
                 qry = qry.filter_by(mapel=args['mapel'])
             
             if args['tanggal'] is not None:
+                # qry = qry.filter_by(tanggal=args['tanggal'])
                 qry = qry.filter(cast(Booking.tanggal, Date) == args['tanggal'])
 
             rows = []
@@ -223,6 +225,9 @@ class BookingResource(Resource):
         elif datetime_object.date() > datetime.now().date() + timedelta(days=7):
             return {'status': 'gagal', 'message': 'Pemesanan hanya bisa dilakukan 7 hari sebelum tanggal les.'}
 
+        #Cek jadwal yang sama
+        jadwal = Jadwalclient.query.filter(Jadwalclient.client_id == id_murid)
+
         # Cek tingkat user
         harga_booking = Harga.query.filter(Harga.tingkat == murid.tingkat).first().harga
         if murid.saldo < (harga_booking + 3500):
@@ -231,7 +236,10 @@ class BookingResource(Resource):
         args['updated_at'] = datetime.now()
         booking = Booking(None, id_murid, 0, args['jenis'], args['tanggal'], args['mapel'], 'waiting', harga_booking, 0, 0, 0, args['created_at'], args['updated_at'])
         db.session.add(booking)
-        db.session.commit()        
+        db.session.commit()
+        jadwal_client = Jadwalclient(None, id_murid, 0, booking.id_booking, datetime_object, datetime_object + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
+        db.session.add(jadwal_client)
+        db.session.commit()
         return {'status': 'oke', 'booking': marshal(booking, Booking.response_fields), 'murid': marshal(murid, Clients.respon_fields)}, 200, {'Content-Type': 'application/json'}
 
 api.add_resource(BookingResource, '/<int:id_booking>', '')
