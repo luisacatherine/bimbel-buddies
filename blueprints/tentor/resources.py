@@ -79,12 +79,12 @@ class TentorResource(Resource):
 
         tentor = Tentors(None,user.id,args['nama'],alamat,args['ktp'],args['phone'],
         args['image'],args['tgl_lahir'],args['gender'],args['fokus'],args['tingkat'],
-        args['pendidikan'],args['ket'],args['rekening'],args['pemilik_nasabah'],args['available'],
-        args['range_jam'],saldo,rating,qty_rating,lat,lon,status,created_at,updated_at)
+        args['pendidikan'],args['ket'],args['rekening'],args['pemilik_nasabah'],saldo,
+        rating,qty_rating,lat,lon,status,created_at,updated_at)
         db.session.add(tentor)
         db.session.commit()
 
-        return {"status": "OK", "data_user":marshal(user, User.respon_fields), "data tentor":marshal(tentor, Tentors.respon_fields)},200, { 'Content-Type': 'application/json' }
+        return {"status": "OK", "data_user":marshal(user, User.respon_fields), "data_tentor":marshal(tentor, Tentors.respon_fields)},200, { 'Content-Type': 'application/json' }
 
     @jwt_required
     def get(self, id=None):
@@ -106,7 +106,7 @@ class TentorResource(Resource):
                 qry_user = User.query.get(id)
                 qry_tentor = Tentors.query.filter_by(user_id=id).first()
                 if qry_user is not None and qry_tentor is not None:
-                    return {"status": "OK", "data_user": marshal(qry_user, User.respon_fields), "data_client": marshal(qry_tentor, Tentors.respon_fields)},200, { 'Content-Type': 'application/json' }
+                    return {"status": "OK", "data_user": marshal(qry_user, User.respon_fields), "data_tentor": marshal(qry_tentor, Tentors.respon_fields)},200, { 'Content-Type': 'application/json' }
                 return {'status': 'NOT_FOUND','message':'user not found'},404, { 'Content-Type': 'application/json' }
             else:
                 offset = (args['p'] * args['rp']) - args['rp']

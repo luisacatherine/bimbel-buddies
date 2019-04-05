@@ -162,10 +162,13 @@ class BookingResource(Resource):
                 qry.saldo_admin += (qry.harga_bensin + qry.harga_booking)
 
                 # Tambah jadwal tentor
-                new_schedule = Jadwaltentor(None, murid.id, tentor.id, qry.id_booking, qry.tanggal, qry.tanggal + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
-                db.session.add(new_schedule)
-                db.session.commit()
-
+                # new_schedule = Jadwaltentor(None, murid.id, tentor.id, qry.id_booking, qry.tanggal, qry.tanggal + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
+                # db.session.add(new_schedule)
+                # qry.status = args['status']
+                # db.session.commit()
+                # temp=marshal(qry, Booking.response_fields)
+                # temp["jarak"]=jarak_tentor
+                # return {'status': 'oke', 'booking': temp}, 200, {'Content-Type': 'application/json'}
             elif args['status'] == 'cancelled':
                 qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
                 db.session.delete(qry_jadwal)
@@ -229,9 +232,9 @@ class BookingResource(Resource):
             return {'status': 'gagal', 'message': 'Saldo Anda tidak mencukupi, silakan top up saldo terlebih dahulu'}
         args['created_at'] = datetime.now()
         args['updated_at'] = datetime.now()
-        booking = Booking(None, id_murid, 0, args['jenis'], args['tanggal'], args['mapel'], 'waiting', harga_booking, 0, 0, 0, args['created_at'], args['updated_at'])
+        booking = Booking(None, id_murid, 0, args['jenis'], args['tanggal'], args['mapel'], 'waiting', harga_booking, 0, 0, 0, 0, args['created_at'], args['updated_at'])
         db.session.add(booking)
         db.session.commit()        
-        return {'status': 'oke', 'booking': marshal(booking, Booking.response_fields)}, 200, {'Content-Type': 'application/json'}
+        return {'status': 'oke', 'booking': marshal(booking, Booking.response_fields), 'murid': marshal(murid, Clients.respon_fields)}, 200, {'Content-Type': 'application/json'}
 
 api.add_resource(BookingResource, '/<int:id_booking>', '')
