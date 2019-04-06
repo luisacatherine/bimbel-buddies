@@ -97,7 +97,7 @@ class TentorResource(Resource):
         parser.add_argument('gender', location='args', choices=['laki-laki', 'perempuan'])
         parser.add_argument('jadwal', location='args')
         parser.add_argument('blocked', location='args', type=bool)
-        parser.add_argument('sortby', location='args', choices=['rating', 'pendidikan'])
+        parser.add_argument('sortby', location='args', choices=['rating', 'pendidikan','pengalaman'])
         args = parser.parse_args()
         jwtClaims = get_jwt_claims()
         if (id == None):
@@ -120,12 +120,26 @@ class TentorResource(Resource):
                         qry = qry.filter_by(tingkat = args['tingkat'])
                     elif args['tingkat'] == 'SMP':
                         qry = qry.filter(or_(Tentors.tingkat == 'SMP', Tentors.tingkat == 'SMA'))
+                    elif args['tingkat'] == 'SD':
+                        qry = qry.filter(or_(Tentors.tingkat == 'SD',Tentors.tingkat == 'SMP', Tentors.tingkat == 'SMA'))    
                 
                 if args['gender'] is not None:
                     qry = qry.filter_by(gender = args['gender'])
                 
                 if args['jadwal'] is not None:
-                    datetime_object = datetime.strptime(args['jadwal'], '%Y-%m-%d %H:%M')
+                    # datetime_object = datetime.strptime(args['jadwal'], '%Y-%m-%d %H:%M')
+                    
+                    try:
+                        datetime_object = datetime.strptime(args['jadwal'], '%Y-%m-%d %H:%M')
+                    except ValueError:
+                        datetime_object = None
+                    if datetime_object == None:
+                        try:
+                            datetime_object = datetime_object = datetime.strptime(args['jadwal'], '%a, %d %b %Y %H:%M:%S %z')
+                        except ValueError:
+                            datetime_object = None
+
+                    # datetime_object = args['jadwal']
                     # Jadwal mulai tentor 
                     qry_jadwal = Jadwaltentor.query.filter(or_(and_(Jadwaltentor.schedule_start <= datetime_object, Jadwaltentor.schedule_end >= datetime_object), and_(Jadwaltentor.schedule_start <= datetime_object + timedelta(hours=1.5), Jadwaltentor.schedule_end >= datetime_object + timedelta(hours=1.5))))
                     booked = []
@@ -150,8 +164,18 @@ class TentorResource(Resource):
                     else:
                         murid = Clients.query.filter(Clients.user_id == jwtClaims['id']).first()
                         tentors = Tentors.query
+                        
+                        if args['sortby'] == 'rating':
+                            qry = qry.order_by(Tentors.rating.desc())
+
+                        elif args['sortby'] == 'pendidikan':
+                            qry = qry.order_by(Tentors.pendidikan.desc())
+
+                        elif args['sortby'] == 'pengalaman':
+                            qry = qry.order_by(Tentors.qty_rating.desc())
+
                         distance = []
-                        jarak = []
+                        listjarak = []
                         for tentor in tentors:
                             resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
                             resp = resp.json()
@@ -166,8 +190,20 @@ class TentorResource(Resource):
                                 angka = angka * 3048 / 10000
                             if angka > args['jarak']:
                                 distance.append(tentor.id)
-                                jarak.append(angka)
+                            else:
+                                listjarak.append(angka)
                         qry = qry.filter(Tentors.id.notin_(distance))
+                        print("ini jarak",listjarak)
+                        rows = []
+                        i=0
+                        for row in qry.limit(args['rp']).offset(offset).all():
+                            temp = marshal(row, Tentors.respon_fields)
+                            user = User.query.get(row.user_id)
+                            temp['user'] = marshal(user, User.respon_fields)
+                            temp['jarak'] = float("{0:.2f}".format(listjarak[i]))
+                            i+=1
+                            rows.append(temp)            
+                        return {'status': 'oke', 'tentors': rows}, 200, {'Content-Type': 'application/json'}
                 
                 if args['sortby'] == 'rating':
                     qry = qry.order_by(Tentors.rating.desc())
