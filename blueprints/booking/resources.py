@@ -161,7 +161,6 @@ class BookingResource(Resource):
                 args['status'] = 'waiting'
 
             elif args['status'] == 'accepted':
-                # return qry.id_tentor
                 # Seleksi mentor by gender dan rating di react
                 qry.id_tentor = tentor.id
 
@@ -192,9 +191,13 @@ class BookingResource(Resource):
                 # temp["jarak"]=jarak_tentor
                 # return {'status': 'oke', 'booking': temp}, 200, {'Content-Type': 'application/json'}
             elif args['status'] == 'cancelled':
-                # qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
-                # db.session.delete(qry_jadwal)
-                # db.session.commit()
+                qry_tentor = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
+                db.session.delete(qry_tentor)
+                db.session.commit()
+
+                qry_client = Jadwalclient.query.filter(Jadwalclient.booking_id == id_booking).first()
+                db.session.delete(qry_client)
+                db.session.commit()
 
                 # Kalau masih j-6
                 if datetime.now() + timedelta(hours=6) < qry.tanggal:
