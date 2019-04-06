@@ -29,7 +29,7 @@ class BookingResource(Resource):
             parser.add_argument('id_tentor', type=int, location='args')
             parser.add_argument('id_murid', type=int, location='args')
             parser.add_argument('tanggal', location='args')
-            parser.add_argument('status', type=str, location='args', choices=['waiting', 'requested', 'accepted', 'cancelled', 'not_accepted'])
+            parser.add_argument('status', type=str, location='args', choices=['waiting', 'requested', 'accepted', 'cancelled', 'not_accepted', 'done'])
             parser.add_argument('mapel', type=str, choices=['mat', 'fis', 'kim', 'bio'])
             args = parser.parse_args()
             offset = (args['p'] * args['rp']) - args['rp']
@@ -156,11 +156,14 @@ class BookingResource(Resource):
             elif args['status'] == 'waiting':
                 qry.id_tentor = 0
 
+            elif args['status'] == 'not_accepted':
+                qry.id_tentor = 0
+                args['status'] = 'waiting'
+
             elif args['status'] == 'accepted':
                 # return qry.id_tentor
                 # Seleksi mentor by gender dan rating di react
                 qry.id_tentor = tentor.id
-                # return "tes"
 
                 # Hitung jarak antara tentor dan murid
                 resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
@@ -175,17 +178,19 @@ class BookingResource(Resource):
                 if satuan == 'ft':
                     angka = angka * 3048 / 10000
                 jarak_tentor = angka
-                # return "tes"
                 # Tambahkan harga bensin
                 qry.harga_bensin += 700 * jarak_tentor
                 murid.saldo -= (qry.harga_bensin + qry.harga_booking)
                 qry.saldo_admin += (qry.harga_bensin + qry.harga_booking)
 
                 # Tambah jadwal tentor
-                new_schedule = Jadwaltentor(None, murid.id, tentor.id, qry.id_booking, qry.tanggal, qry.tanggal + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
-                db.session.add(new_schedule)
-                db.session.commit()
-
+                # new_schedule = Jadwaltentor(None, murid.id, tentor.id, qry.id_booking, qry.tanggal, qry.tanggal + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
+                # db.session.add(new_schedule)
+                # qry.status = args['status']
+                # db.session.commit()
+                # temp=marshal(qry, Booking.response_fields)
+                # temp["jarak"]=jarak_tentor
+                # return {'status': 'oke', 'booking': temp}, 200, {'Content-Type': 'application/json'}
             elif args['status'] == 'cancelled':
                 # qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
                 # db.session.delete(qry_jadwal)
@@ -217,10 +222,12 @@ class BookingResource(Resource):
             
             elif args['status'] == 'done':
                 qry.saldo_tentor = 0.8 * qry.harga_booking + qry.harga_bensin
+                # return qry.saldo_tentor
                 tentor.saldo += qry.saldo_tentor
                 qry.saldo_admin -= (0.8 * qry.harga_booking + qry.harga_bensin)
             qry.status = args['status']
         qry.updated_at= datetime.now()
+            # return qry.id_tentor
         db.session.commit()
         return {'status': 'oke', 'booking': marshal(qry, Booking.response_fields)}, 200, {'Content-Type': 'application/json'}
         
@@ -254,7 +261,7 @@ class BookingResource(Resource):
             return {'status': 'gagal', 'message': 'Saldo Anda tidak mencukupi, silakan top up saldo terlebih dahulu'}
         args['created_at'] = datetime.now()
         args['updated_at'] = datetime.now()
-        booking = Booking(None, id_murid, 0, args['jenis'], args['tanggal'], args['mapel'], 'waiting', harga_booking, 0, 0, 0, args['created_at'], args['updated_at'])
+        booking = Booking(None, id_murid, 0, args['jenis'], args['tanggal'], args['mapel'], 'waiting', harga_booking, 0, 0, 0, 0, args['created_at'], args['updated_at'])
         db.session.add(booking)
         db.session.commit()
         jadwal_client = Jadwalclient(None, id_murid, 0, booking.id_booking, datetime_object, datetime_object + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())

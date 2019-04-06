@@ -79,8 +79,8 @@ class TentorResource(Resource):
 
         tentor = Tentors(None,user.id,args['nama'],alamat,args['ktp'],args['phone'],
         args['image'],args['tgl_lahir'],args['gender'],args['fokus'],args['tingkat'],
-        args['pendidikan'],args['ket'],args['rekening'],args['pemilik_nasabah'],args['available'],
-        args['range_jam'],saldo,rating,qty_rating,lat,lon,status,created_at,updated_at)
+        args['pendidikan'],args['ket'],args['rekening'],args['pemilik_nasabah'],saldo,
+        rating,qty_rating,lat,lon,status,created_at,updated_at)
         db.session.add(tentor)
         db.session.commit()
 
