@@ -34,6 +34,22 @@ class BookingResource(Resource):
             args = parser.parse_args()
             offset = (args['p'] * args['rp']) - args['rp']
             qry = Booking.query
+            
+            check_exp = Booking.query.filter_by(status="requested").all()
+            for check_exp in check_exp:
+                if (datetime.now()  > check_exp.updated_at + timedelta(hours=1)):
+                    print("---- requested jadi waiting ----",check_exp.updated_at)
+                    check_exp.status = "waiting"
+                    check_exp.updated_at= datetime.now()
+                    db.session.commit()
+
+            check_exp = Booking.query.filter_by(status="waiting").all()
+            for check_exp in check_exp:
+                if (datetime.now() + timedelta(hours=12) > check_exp.tanggal):
+                    print("---- check exp ----",check_exp.tanggal)
+                    check_exp.status = "expired"
+                    check_exp.updated_at= datetime.now()
+                    db.session.commit()
 
             if jwtClaims['tipe'] == 'tentor':
                 tentor = Tentors.query.filter(Tentors.user_id == jwtClaims['id']).first()
@@ -50,15 +66,6 @@ class BookingResource(Resource):
                 qry = qry.filter_by(id_murid=args['id_murid'])
 
             if args['status'] is not None:
-                if args['status'] == 'waiting':
-                    check_exp = Booking.query.filter_by(status="waiting").all()
-                    for check_exp in check_exp:
-                        if (datetime.now() + timedelta(hours=12) > check_exp.tanggal):
-                            print("---- check exp ----",check_exp.tanggal)
-                            check_exp.status = "expired"
-                            check_exp.updated_at= datetime.now()
-                            db.session.commit()
-
                 qry = qry.filter_by(status=args['status'])
 
             if args['mapel'] is not None:
@@ -237,7 +244,6 @@ class BookingResource(Resource):
             return {'status': 'gagal', 'message': 'Pemesanan hanya bisa dilakukan 7 hari sebelum tanggal les.'}
 
         #Cek jadwal yang sama
-        jadwal = Jadwalclient.query
         jadwal = Jadwalclient.query.filter_by(client_id=id_murid)
         jadwal = jadwal.filter_by(schedule_start=datetime_object).first()
         if jadwal is not None:
