@@ -198,10 +198,17 @@ class BookingResource(Resource):
 
                 # Kalau masih j-6
                 if datetime.now() + timedelta(hours=6) < qry.tanggal:
-                    murid.saldo += (qry.harga_booking + qry.harga_bensin)
-                    qry.saldo_admin -= (qry.harga_booking + qry.harga_bensin)
-                    qry.harga_booking = 0
-                    qry.harga_bensin = 0
+                    if qr.status == 'requested':
+                        murid.saldo += (qry.harga_booking + qry.harga_bensin)
+                        qry.saldo_admin = 0
+                        qry.harga_booking = 0
+                        qry.harga_bensin = 0
+                    
+                    elif qr.status == 'accepted':
+                        murid.saldo += (qry.harga_booking + qry.harga_bensin)
+                        qry.saldo_admin -= (qry.harga_booking + qry.harga_bensin)
+                        qry.harga_booking = 0
+                        qry.harga_bensin = 0
 
                 # Kalau sudah mepet
                 else:
