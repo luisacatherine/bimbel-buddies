@@ -50,6 +50,15 @@ class BookingResource(Resource):
                 qry = qry.filter_by(id_murid=args['id_murid'])
 
             if args['status'] is not None:
+                if args['status'] == 'waiting':
+                    check_exp = Booking.query.filter_by(status="waiting").all()
+                    for check_exp in check_exp:
+                        if (datetime.now() + timedelta(hours=12) > check_exp.tanggal):
+                            print("---- check exp ----",check_exp.tanggal)
+                            check_exp.status = "expired"
+                            check_exp.updated_at= datetime.now()
+                            db.session.commit()
+
                 qry = qry.filter_by(status=args['status'])
 
             if args['mapel'] is not None:
@@ -119,6 +128,8 @@ class BookingResource(Resource):
             # Delete jadwal tentor
             qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
             db.session.delete(qry_jadwal)
+            jadwal_client =Jadwalclient.query.filter(Jadwaltentor.booking_id == id_booking).first()
+            db.session.delete(jadwal_client)
             db.session.commit()
 
 
@@ -129,7 +140,7 @@ class BookingResource(Resource):
             if jwtClaims['tipe'] == 'tentor':
                 tentor = Tentors.query.filter(Tentors.user_id == jwtClaims['id']).first()
             if jwtClaims['tipe'] == 'client':
-                tentor = Tentors.query.filter(Tentors.user_id == args['id_tentor']).first()
+                tentor = Tentors.query.filter(Tentors.id == args['id_tentor']).first()
             murid = Clients.query.filter(Clients.id == qry.id_murid).first()
 
             if args['status'] == 'requested':
@@ -169,9 +180,9 @@ class BookingResource(Resource):
                 db.session.commit()
 
             elif args['status'] == 'cancelled':
-                qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
-                db.session.delete(qry_jadwal)
-                db.session.commit()
+                # qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
+                # db.session.delete(qry_jadwal)
+                # db.session.commit()
 
                 # Kalau masih j-6
                 if datetime.now() + timedelta(hours=6) < qry.tanggal:
@@ -202,7 +213,7 @@ class BookingResource(Resource):
                 tentor.saldo += qry.saldo_tentor
                 qry.saldo_admin -= (0.8 * qry.harga_booking + qry.harga_bensin)
             qry.status = args['status']
-
+        qry.updated_at= datetime.now()
         db.session.commit()
         return {'status': 'oke', 'booking': marshal(qry, Booking.response_fields)}, 200, {'Content-Type': 'application/json'}
         
@@ -226,8 +237,11 @@ class BookingResource(Resource):
             return {'status': 'gagal', 'message': 'Pemesanan hanya bisa dilakukan 7 hari sebelum tanggal les.'}
 
         #Cek jadwal yang sama
-        jadwal = Jadwalclient.query.filter(Jadwalclient.client_id == id_murid)
-
+        jadwal = Jadwalclient.query
+        jadwal = Jadwalclient.query.filter_by(client_id=id_murid)
+        jadwal = jadwal.filter_by(schedule_start=datetime_object).first()
+        if jadwal is not None:
+            return {'status': 'gagal', 'message': 'Pemesanan tidak bisa di waktu yang sama'}
         # Cek tingkat user
         harga_booking = Harga.query.filter(Harga.tingkat == murid.tingkat).first().harga
         if murid.saldo < (harga_booking + 3500):
