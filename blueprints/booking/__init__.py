@@ -15,7 +15,7 @@ class Booking(db.Model):
     jenis = db.Column(db.String(10), nullable=False)
     tanggal = db.Column(db.DateTime)
     mapel = db.Column(db.String(50))
-    status = db.Column(db.String(10), nullable=False)
+    status = db.Column(db.String(12), nullable=False)
     harga_booking = db.Column(db.Integer)
     harga_bensin = db.Column(db.Integer)
     saldo_tentor = db.Column(db.Integer)

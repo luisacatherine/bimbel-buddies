@@ -28,7 +28,7 @@ class BookingResource(Resource):
             parser.add_argument('id_tentor', type=int, location='args')
             parser.add_argument('id_murid', type=int, location='args')
             parser.add_argument('tanggal', location='args')
-            parser.add_argument('status', type=str, location='args', choices=['waiting', 'requested', 'accepted', 'cancelled', 'not_accepted'])
+            parser.add_argument('status', type=str, location='args', choices=['waiting', 'requested', 'accepted', 'cancelled', 'not_accepted', 'done'])
             parser.add_argument('mapel', type=str, choices=['mat', 'fis', 'kim', 'bio'])
             args = parser.parse_args()
             offset = (args['p'] * args['rp']) - args['rp']
@@ -127,7 +127,7 @@ class BookingResource(Resource):
             if jwtClaims['tipe'] == 'tentor':
                 tentor = Tentors.query.filter(Tentors.user_id == jwtClaims['id']).first()
             if jwtClaims['tipe'] == 'client':
-                tentor = Tentors.query.filter(Tentors.user_id == args['id_tentor']).first()
+                tentor = Tentors.query.filter(Tentors.id == args['id_tentor']).first()
             murid = Clients.query.filter(Clients.id == qry.id_murid).first()
 
             if args['status'] == 'requested':
@@ -136,11 +136,14 @@ class BookingResource(Resource):
             elif args['status'] == 'waiting':
                 qry.id_tentor = 0
 
+            elif args['status'] == 'not_accepted':
+                qry.id_tentor = 0
+                args['status'] = 'waiting'
+
             elif args['status'] == 'accepted':
                 # return qry.id_tentor
                 # Seleksi mentor by gender dan rating di react
                 qry.id_tentor = tentor.id
-                # return "tes"
 
                 # Hitung jarak antara tentor dan murid
                 resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
@@ -155,7 +158,6 @@ class BookingResource(Resource):
                 if satuan == 'ft':
                     angka = angka * 3048 / 10000
                 jarak_tentor = angka
-                # return "tes"
                 # Tambahkan harga bensin
                 qry.harga_bensin += 700 * jarak_tentor
                 murid.saldo -= (qry.harga_bensin + qry.harga_booking)
@@ -200,10 +202,11 @@ class BookingResource(Resource):
             
             elif args['status'] == 'done':
                 qry.saldo_tentor = 0.8 * qry.harga_booking + qry.harga_bensin
+                # return qry.saldo_tentor
                 tentor.saldo += qry.saldo_tentor
                 qry.saldo_admin -= (0.8 * qry.harga_booking + qry.harga_bensin)
             qry.status = args['status']
-
+            # return qry.id_tentor
         db.session.commit()
         return {'status': 'oke', 'booking': marshal(qry, Booking.response_fields)}, 200, {'Content-Type': 'application/json'}
         
