@@ -21,6 +21,7 @@ class Booking(db.Model):
     saldo_tentor = db.Column(db.Integer)
     saldo_admin = db.Column(db.Integer)
     jarak = db.Column(db.Float)
+    jumlah_murid = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(), index=True)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(), index=True)
 
@@ -37,6 +38,7 @@ class Booking(db.Model):
         'saldo_tentor': fields.Integer,
         'saldo_admin': fields.Integer,
         'jarak': fields.Float,
+        'jumlah_murid': fields.Integer,
         'created_at': fields.DateTime,
         'updated_at': fields.DateTime
     }
@@ -71,7 +73,7 @@ class Booking(db.Model):
         'updated_at': fields.DateTime
     }
 
-    def __init__(self, id_booking, id_murid, id_tentor, jenis, tanggal, mapel, status, harga_booking, harga_bensin, saldo_tentor, saldo_admin, jarak, created_at, updated_at):
+    def __init__(self, id_booking, id_murid, id_tentor, jenis, tanggal, mapel, status, harga_booking, harga_bensin, saldo_tentor, saldo_admin, jarak, jumlah_murid, created_at, updated_at):
         self.id_booking = id_booking
         self.id_murid = id_murid
         self.id_tentor = id_tentor
@@ -84,6 +86,7 @@ class Booking(db.Model):
         self.saldo_tentor = saldo_tentor
         self.saldo_admin = saldo_admin
         self.jarak = jarak
+        self.jumlah_murid = jumlah_murid
         self.created_at = created_at
         self.updated_at = updated_at
 
