@@ -38,7 +38,7 @@ class BookingResource(Resource):
             
             check_exp = Booking.query.filter_by(status="requested").all()
             for check_exp in check_exp:
-                if (datetime.now()  > check_exp.updated_at + timedelta(minutes=1)):
+                if (datetime.now()  > check_exp.updated_at + timedelta(hours=2)):
                     print("---- requested jadi waiting ----",check_exp.updated_at)
                     check_exp.status = "waiting"
                     check_exp.id_tentor = 0
