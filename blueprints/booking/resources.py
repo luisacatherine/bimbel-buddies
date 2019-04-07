@@ -41,6 +41,7 @@ class BookingResource(Resource):
                 if (datetime.now()  > check_exp.updated_at + timedelta(hours=1)):
                     print("---- requested jadi waiting ----",check_exp.updated_at)
                     check_exp.status = "waiting"
+                    qry.id_tentor = 0
                     check_exp.updated_at= datetime.now()
                     db.session.commit()
 
@@ -138,6 +139,7 @@ class BookingResource(Resource):
                 return {'status': 'gagal', 'message': 'Pemesanan hanya bisa dilakukan 7 hari sebelum tanggal les.'}
             qry.tanggal = args['tanggal']
             qry.status = 'waiting'
+            qry.id_tentor = 0
 
             # Delete jadwal tentor
             qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
@@ -159,6 +161,20 @@ class BookingResource(Resource):
 
             if args['status'] == 'requested':
                 qry.id_tentor = args['id_tentor']
+                # Hitung jarak antara tentor dan murid
+                resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
+                resp = resp.json()
+                jarak = resp['rows'][0]['elements'][0]['distance']['text']
+                angka = re.findall(r'([1-9]|\.)', jarak)
+                angka = float(''.join(angka))
+                satuan = re.findall(r'([a-z])', jarak)
+                satuan = ''.join(satuan)
+                if satuan == 'mi':
+                    angka = angka * 1609 / 1000
+                if satuan == 'ft':
+                    angka = angka * 3048 / 10000
+                jarak_tentor = float("{0:.2f}".format(angka))
+                qry.jarak = jarak_tentor
 
             elif args['status'] == 'waiting':
                 qry.id_tentor = 0
@@ -198,10 +214,10 @@ class BookingResource(Resource):
                 # temp["jarak"]=jarak_tentor
                 # return {'status': 'oke', 'booking': temp}, 200, {'Content-Type': 'application/json'}
             elif args['status'] == 'cancelled':
-                qry_tentor = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
-                db.session.delete(qry_tentor)
-                db.session.commit()
-
+                if qry.status == 'accepted':
+                    qry_tentor = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
+                    db.session.delete(qry_tentor)
+                    db.session.commit()
                 qry_client = Jadwalclient.query.filter(Jadwalclient.booking_id == id_booking).first()
                 db.session.delete(qry_client)
                 db.session.commit()
