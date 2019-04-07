@@ -4,6 +4,7 @@ from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, marshal
 from blueprints import db
 from . import *
+from blueprints.jadwal_client import *
 from sqlalchemy import Date, cast
 from flask_jwt_extended import get_jwt_claims, jwt_required
 from datetime import datetime, date, timedelta
@@ -24,15 +25,31 @@ class BookingResource(Resource):
         if (id_booking == None):
             parser = reqparse.RequestParser()
             parser.add_argument('p', type=int, location='args', default=1)
-            parser.add_argument('rp', type=int, location='args', default=5)
+            parser.add_argument('rp', type=int, location='args', default=100)
             parser.add_argument('id_tentor', type=int, location='args')
             parser.add_argument('id_murid', type=int, location='args')
             parser.add_argument('tanggal', location='args')
-            parser.add_argument('status', type=str, location='args', choices=['waiting', 'requested', 'accepted', 'cancelled', 'not_accepted'])
+            parser.add_argument('status', type=str, location='args', choices=['waiting', 'requested', 'accepted', 'cancelled', 'not_accepted', 'done'])
             parser.add_argument('mapel', type=str, choices=['mat', 'fis', 'kim', 'bio'])
             args = parser.parse_args()
             offset = (args['p'] * args['rp']) - args['rp']
             qry = Booking.query
+            
+            check_exp = Booking.query.filter_by(status="requested").all()
+            for check_exp in check_exp:
+                if (datetime.now()  > check_exp.updated_at + timedelta(hours=1)):
+                    print("---- requested jadi waiting ----",check_exp.updated_at)
+                    check_exp.status = "waiting"
+                    check_exp.updated_at= datetime.now()
+                    db.session.commit()
+
+            check_exp = Booking.query.filter_by(status="waiting").all()
+            for check_exp in check_exp:
+                if (datetime.now() + timedelta(hours=12) > check_exp.tanggal):
+                    print("---- check exp ----",check_exp.tanggal)
+                    check_exp.status = "expired"
+                    check_exp.updated_at= datetime.now()
+                    db.session.commit()
 
             if jwtClaims['tipe'] == 'tentor':
                 tentor = Tentors.query.filter(Tentors.user_id == jwtClaims['id']).first()
@@ -55,6 +72,7 @@ class BookingResource(Resource):
                 qry = qry.filter_by(mapel=args['mapel'])
             
             if args['tanggal'] is not None:
+                # qry = qry.filter_by(tanggal=args['tanggal'])
                 qry = qry.filter(cast(Booking.tanggal, Date) == args['tanggal'])
 
             rows = []
@@ -117,6 +135,8 @@ class BookingResource(Resource):
             # Delete jadwal tentor
             qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
             db.session.delete(qry_jadwal)
+            jadwal_client =Jadwalclient.query.filter(Jadwaltentor.booking_id == id_booking).first()
+            db.session.delete(jadwal_client)
             db.session.commit()
 
 
@@ -127,7 +147,7 @@ class BookingResource(Resource):
             if jwtClaims['tipe'] == 'tentor':
                 tentor = Tentors.query.filter(Tentors.user_id == jwtClaims['id']).first()
             if jwtClaims['tipe'] == 'client':
-                tentor = Tentors.query.filter(Tentors.user_id == args['id_tentor']).first()
+                tentor = Tentors.query.filter(Tentors.id == args['id_tentor']).first()
             murid = Clients.query.filter(Clients.id == qry.id_murid).first()
 
             if args['status'] == 'requested':
@@ -136,11 +156,13 @@ class BookingResource(Resource):
             elif args['status'] == 'waiting':
                 qry.id_tentor = 0
 
+            elif args['status'] == 'not_accepted':
+                qry.id_tentor = 0
+                args['status'] = 'waiting'
+
             elif args['status'] == 'accepted':
-                # return qry.id_tentor
                 # Seleksi mentor by gender dan rating di react
                 qry.id_tentor = tentor.id
-                # return "tes"
 
                 # Hitung jarak antara tentor dan murid
                 resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
@@ -155,28 +177,41 @@ class BookingResource(Resource):
                 if satuan == 'ft':
                     angka = angka * 3048 / 10000
                 jarak_tentor = angka
-                # return "tes"
                 # Tambahkan harga bensin
                 qry.harga_bensin += 700 * jarak_tentor
                 murid.saldo -= (qry.harga_bensin + qry.harga_booking)
                 qry.saldo_admin += (qry.harga_bensin + qry.harga_booking)
 
                 # Tambah jadwal tentor
-                new_schedule = Jadwaltentor(None, murid.id, tentor.id, qry.id_booking, qry.tanggal, qry.tanggal + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
-                db.session.add(new_schedule)
+                # new_schedule = Jadwaltentor(None, murid.id, tentor.id, qry.id_booking, qry.tanggal, qry.tanggal + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
+                # db.session.add(new_schedule)
+                # qry.status = args['status']
+                # db.session.commit()
+                # temp=marshal(qry, Booking.response_fields)
+                # temp["jarak"]=jarak_tentor
+                # return {'status': 'oke', 'booking': temp}, 200, {'Content-Type': 'application/json'}
+            elif args['status'] == 'cancelled':
+                qry_tentor = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
+                db.session.delete(qry_tentor)
                 db.session.commit()
 
-            elif args['status'] == 'cancelled':
-                qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
-                db.session.delete(qry_jadwal)
+                qry_client = Jadwalclient.query.filter(Jadwalclient.booking_id == id_booking).first()
+                db.session.delete(qry_client)
                 db.session.commit()
 
                 # Kalau masih j-6
                 if datetime.now() + timedelta(hours=6) < qry.tanggal:
-                    murid.saldo += (qry.harga_booking + qry.harga_bensin)
-                    qry.saldo_admin -= (qry.harga_booking + qry.harga_bensin)
-                    qry.harga_booking = 0
-                    qry.harga_bensin = 0
+                    if qr.status == 'requested':
+                        murid.saldo += (qry.harga_booking + qry.harga_bensin)
+                        qry.saldo_admin = 0
+                        qry.harga_booking = 0
+                        qry.harga_bensin = 0
+                    
+                    elif qr.status == 'accepted':
+                        murid.saldo += (qry.harga_booking + qry.harga_bensin)
+                        qry.saldo_admin -= (qry.harga_booking + qry.harga_bensin)
+                        qry.harga_booking = 0
+                        qry.harga_bensin = 0
 
                 # Kalau sudah mepet
                 else:
@@ -197,10 +232,12 @@ class BookingResource(Resource):
             
             elif args['status'] == 'done':
                 qry.saldo_tentor = 0.8 * qry.harga_booking + qry.harga_bensin
+                # return qry.saldo_tentor
                 tentor.saldo += qry.saldo_tentor
                 qry.saldo_admin -= (0.8 * qry.harga_booking + qry.harga_bensin)
             qry.status = args['status']
-
+        qry.updated_at= datetime.now()
+            # return qry.id_tentor
         db.session.commit()
         return {'status': 'oke', 'booking': marshal(qry, Booking.response_fields)}, 200, {'Content-Type': 'application/json'}
         
@@ -213,6 +250,7 @@ class BookingResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('jenis', location='json', choices=['rutin', 'insidentil'], required=True)
         parser.add_argument('tanggal', location='json', required=True)
+        parser.add_argument('jumlah', location='json', type=int, choices=[1, 2, 3, 4], required=True)
         parser.add_argument('mapel', type=str, choices=['mat', 'fis', 'kim', 'bio'], required=True)
         args = parser.parse_args()
         datetime_object = datetime.strptime(args['tanggal'], '%Y-%m-%d %H:%M')
@@ -223,15 +261,49 @@ class BookingResource(Resource):
         elif datetime_object.date() > datetime.now().date() + timedelta(days=7):
             return {'status': 'gagal', 'message': 'Pemesanan hanya bisa dilakukan 7 hari sebelum tanggal les.'}
 
+        #Cek jadwal yang sama
+        jadwal = Jadwalclient.query.filter_by(client_id=id_murid)
+        jadwal = jadwal.filter_by(schedule_start=datetime_object).first()
+        if jadwal is not None:
+            return {'status': 'gagal', 'message': 'Pemesanan tidak bisa di waktu yang sama'}
         # Cek tingkat user
         harga_booking = Harga.query.filter(Harga.tingkat == murid.tingkat).first().harga
-        if murid.saldo < (harga_booking + 3500):
+        harga_total = harga_booking * args['jumlah']
+        if args['jumlah'] == 2:
+            harga_total *= 0.95
+        if args['jumlah'] == 3:
+            harga_total *= 0.90
+        if args['jumlah'] == 4:
+            harga_total *= 0.85
+        if murid.saldo < (harga_total + 7000):
             return {'status': 'gagal', 'message': 'Saldo Anda tidak mencukupi, silakan top up saldo terlebih dahulu'}
         args['created_at'] = datetime.now()
         args['updated_at'] = datetime.now()
-        booking = Booking(None, id_murid, 0, args['jenis'], args['tanggal'], args['mapel'], 'waiting', harga_booking, 0, 0, 0, args['created_at'], args['updated_at'])
-        db.session.add(booking)
-        db.session.commit()        
-        return {'status': 'oke', 'booking': marshal(booking, Booking.response_fields), 'murid': marshal(murid, Clients.respon_fields)}, 200, {'Content-Type': 'application/json'}
+
+        if args['jenis'] == 'rutin':
+            delta = 0
+            loop = 1
+            all_book = []
+            while loop <= 4:
+                # booking = Booking(None, id_murid, 0, args['jenis'], args['tanggal'], args['mapel'], 'waiting', harga_booking, 0, 0, 0, 0, args['created_at'], args['updated_at'])
+                booking = Booking(None, id_murid, 0, args['jenis'], datetime_object + timedelta(days=delta), args['mapel'], 'waiting', harga_total, 0, 0, 0, 0, args['jumlah'], args['created_at'], args['updated_at'])
+                db.session.add(booking)
+                db.session.commit()
+                all_book.append(marshal(booking, Booking.response_fields))
+                jadwal_client = Jadwalclient(None, id_murid, 0, booking.id_booking, datetime_object + timedelta(days=delta), datetime_object + timedelta(days=delta) + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
+                db.session.add(jadwal_client)
+                db.session.commit()
+                delta += 7
+                loop += 1
+            return {'status': 'oke', 'booking': all_book, 'murid': marshal(murid, Clients.respon_fields)}, 200, {'Content-Type': 'application/json'}
+
+        elif args['jenis'] == 'insidentil':
+            booking = Booking(None, id_murid, 0, args['jenis'], args['tanggal'], args['mapel'], 'waiting', harga_total, 0, 0, 0, 0, args['jumlah'], args['created_at'], args['updated_at'])
+            db.session.add(booking)
+            db.session.commit()
+            jadwal_client = Jadwalclient(None, id_murid, 0, booking.id_booking, datetime_object, datetime_object + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
+            db.session.add(jadwal_client)
+            db.session.commit()
+            return {'status': 'oke', 'booking': marshal(booking, Booking.response_fields), 'murid': marshal(murid, Clients.respon_fields)}, 200, {'Content-Type': 'application/json'}
 
 api.add_resource(BookingResource, '/<int:id_booking>', '')
