@@ -29,6 +29,7 @@ class BookingResource(Resource):
             parser.add_argument('id_tentor', type=int, location='args')
             parser.add_argument('id_murid', type=int, location='args')
             parser.add_argument('tanggal', location='args')
+            parser.add_argument('sort_tanggal', location='args', choices=['terbaru', 'terlama'])
             parser.add_argument('status', type=str, location='args', choices=['waiting', 'requested', 'accepted', 'cancelled', 'not_accepted', 'done'])
             parser.add_argument('mapel', type=str, choices=['mat', 'fis', 'kim', 'bio'])
             args = parser.parse_args()
@@ -74,6 +75,12 @@ class BookingResource(Resource):
             if args['tanggal'] is not None:
                 # qry = qry.filter_by(tanggal=args['tanggal'])
                 qry = qry.filter(cast(Booking.tanggal, Date) == args['tanggal'])
+
+            if args['sort_tanggal'] is not None:
+                if args['sort_tanggal'] == 'terbaru':
+                    qry = qry.order_by(Booking.tanggal.desc())
+                elif args['sort_tanggal'] == 'terlama':
+                    qry = qry.order_by(Booking.tanggal.asc())
 
             rows = []
             for row in qry.limit(args['rp']).offset(offset).all():
