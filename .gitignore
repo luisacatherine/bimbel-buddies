@@ -8,6 +8,8 @@ instance/*
 .webassets-cache
 node_modules
 migrations
+storage/
+storage
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
