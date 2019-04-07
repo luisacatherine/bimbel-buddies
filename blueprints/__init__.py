@@ -67,6 +67,7 @@ from blueprints.Payment.resources import bp_payment
 from blueprints.Topup.resources import bp_topup
 from blueprints.Review.resources import bp_review
 from blueprints.blocked_tentor.resources import bp_blocked
+from blueprints.expo_token.resources import bp_token
 
 app.register_blueprint(bp_clieent, url_prefix='/client')
 app.register_blueprint(bp_tentor, url_prefix='/tentor')
@@ -78,5 +79,6 @@ app.register_blueprint(bp_review, url_prefix='/review')
 app.register_blueprint(bp_payment, url_prefix='/payment')
 app.register_blueprint(bp_topup, url_prefix='/topup')
 app.register_blueprint(bp_blocked, url_prefix='/blocked')
+app.register_blueprint(bp_token, url_prefix='/token')
 
 db.create_all()
