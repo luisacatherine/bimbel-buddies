@@ -16,8 +16,6 @@ class Clients(db.Model):
     tgl_lahir = db.Column(db.DateTime)
     gender = db.Column(db.String(20))
     tingkat = db.Column(db.String(20))
-    gender_tentor = db.Column(db.String(20))
-    ortu = db.Column(db.String(100))
     saldo = db.Column(db.Integer)
     # tipe = db.Column(db.String(30))# String[panjang string, default 255],nullable boleh kosong
     lat = db.Column(db.Float)
@@ -28,8 +26,6 @@ class Clients(db.Model):
     respon_fields = {
         'id': fields.Integer,
         'user_id': fields.Integer,
-        # 'username' : fields.String,
-        # 'password' : fields.String,
         'nama' : fields.String,
         'address' : fields.String,
         'phone' : fields.String,
@@ -37,10 +33,7 @@ class Clients(db.Model):
         'tgl_lahir' : fields.DateTime,
         'gender' : fields.String,
         'tingkat' : fields.String,
-        'gender_tentor' : fields.String,
-        'ortu' : fields.String,
         'saldo': fields.Integer,
-        # 'tipe' : fields.String,
         'lat' : fields.Float,
         'lon' : fields.Float,
         'created_at' : fields.DateTime,
@@ -48,7 +41,7 @@ class Clients(db.Model):
     }
 
     def __init__(self,id,user_id,nama,address,phone,image,tgl_lahir,gender,tingkat,
-        gender_tentor,ortu,saldo,lat,lon,created_at,updated_at):
+        saldo,lat,lon,created_at,updated_at):
         self.id = id
         self.user_id = user_id
         self.nama = nama
@@ -58,8 +51,6 @@ class Clients(db.Model):
         self.tgl_lahir = tgl_lahir
         self.gender = gender
         self.tingkat = tingkat
-        self.gender_tentor = gender_tentor
-        self.ortu = ortu
         self.saldo = saldo
         self.lat = lat
         self.lon = lon

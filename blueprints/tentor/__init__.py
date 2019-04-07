@@ -2,6 +2,12 @@ import random, logging
 from blueprints import db
 from flask_restful import fields
 import datetime
+from geopy.distance import great_circle, geodesic
+from sqlalchemy import func
+from sqlalchemy.ext.hybrid import hybrid_method
+from blueprints.jadwal_tentor import *
+from blueprints.tentor import *
+from blueprints.blocked_tentor import *
 
 #Client CLASS
 
@@ -19,12 +25,9 @@ class Tentors(db.Model):
     fokus = db.Column(db.String(20))
     tingkat = db.Column(db.String(20))
     pendidikan = db.Column(db.String(20))
-    ket = db.Column(db.String(30))
-    # tipe = db.Column(db.String(30))# String[panjang string, default 255],nullable boleh kosong
+    ket = db.Column(db.String(400))
     rekening = db.Column(db.String(30))
     pemilik_nasabah = db.Column(db.String(100))
-    available = db.Column(db.String(30))
-    range_jam = db.Column(db.String(30))
     saldo = db.Column(db.Integer)
     rating = db.Column(db.Float)
     qty_rating = db.Column(db.Integer)
@@ -50,8 +53,6 @@ class Tentors(db.Model):
         'ket' : fields.String,
         'rekening' : fields.String,
         'pemilik_nasabah' : fields.String,
-        'available' : fields.String,
-        'range_jam' : fields.String,
         'saldo': fields.Integer,
         'rating' : fields.Float,
         'qty_rating': fields.Integer,
@@ -63,7 +64,7 @@ class Tentors(db.Model):
     }
 
     def __init__(self,id,user_id,nama,address,ktp,phone,image,tgl_lahir,gender,fokus,tingkat,
-        pendidikan,ket,rekening,pemilik_nasabah,available,range_jam,saldo,rating,qty_rating,lat,
+        pendidikan,ket,rekening,pemilik_nasabah,saldo,rating,qty_rating,lat,
         lon,status,created_at,updated_at):
         self.id = id
         self.user_id = user_id
@@ -80,8 +81,6 @@ class Tentors(db.Model):
         self.ket = ket
         self.rekening = rekening
         self.pemilik_nasabah = pemilik_nasabah
-        self.available = available
-        self.range_jam = range_jam
         self.saldo = saldo
         self.rating = rating
         self.qty_rating = qty_rating
@@ -90,7 +89,7 @@ class Tentors(db.Model):
         self.status = status
         self.created_at = created_at
         self.updated_at = updated_at
-    
+
     #return repr harus string
     def __repr__(self):
         return '<Tentors %r>' % self.id
