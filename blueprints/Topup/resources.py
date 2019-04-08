@@ -7,6 +7,7 @@ from flask_jwt_extended import jwt_required, get_jwt_claims
 import random
 from . import *
 from ..Client import *
+from ..tentor import *
 from datetime import date, datetime
 #add __init__.py
 from blueprints import db
@@ -87,12 +88,16 @@ class TopupResource(Resource):
         jwtClaims = get_jwt_claims()
         tipe = jwtClaims['tipe']
 
-        if tipe != "client":
+        if tipe == "admin" or tipe == "bank":
             return {'message':'UNAUTHORIZED'}, 401, { 'Content-Type': 'application/json' }
-        
-        qry_client = Clients.query.filter(Clients.user_id == get_jwt_claims()['id']).first()
-        user_id = qry_client.id
-        client = marshal(qry_client, Clients.respon_fields)
+        if tipe == 'client':
+            qry = Clients.query.filter(Clients.user_id == jwtClaims['id']).first()
+            user = marshal(qry, Clients.respon_fields)
+        if tipe == 'tentor':
+            qry = Tentors.query.filter(Tentors.user_id == jwtClaims['id']).first()
+            user = marshal(qry, Tentors.respon_fields)
+        user_id = qry.user_id
+        data_topup = Topups.query.filter(Topups.id_murid == user_id).first()
         parser = reqparse.RequestParser()
         parser.add_argument('nominal', type=int, location='json', required=True),
         parser.add_argument('metode_pembayaran', location='json', required=True, choices=['transfer', 'cash', 'credit'])
@@ -102,7 +107,7 @@ class TopupResource(Resource):
         topup = Topups(None, user_id, args['nominal'], args['metode_pembayaran'], 'waiting', created_at, updated_at)
         db.session.add(topup)
         db.session.commit()
-        return {'status': 'OK','message':"success add topup",'client':client,'data': marshal(topup, Topups.respon_fields)}, 200, { 'Content-Type': 'application/json' }
+        return {'status': 'OK','message':"success add topup",'user':user,'data': marshal(topup, Topups.respon_fields)}, 200, { 'Content-Type': 'application/json' }
 
     # ===== Put verifikasi bank =====
     @jwt_required
@@ -111,24 +116,28 @@ class TopupResource(Resource):
         if tipe != "bank":
             return {'message':'UNAUTHORIZED'}, 401, { 'Content-Type': 'application/json' }       
         qry_topup = Topups.query.get(id)
-        qry_client = Clients.query.filter(Clients.id == qry_topup.id_murid).first()
-
         parser = reqparse.RequestParser()
-        parser.add_argument('id_murid', location='json', default=qry_topup.id_murid)
+        parser.add_argument('id_user', location='json', default=qry_topup.id_murid)
         parser.add_argument('nominal', location='json', default=qry_topup.nominal)
+        # parser.add_argument('tipe', location='json', choices=['client', 'tentor'])
         parser.add_argument('metode_pembayaran', location='json', default=qry_topup.metode_pembayaran, choices=['transfer', 'cash', 'credit'])
         parser.add_argument('status', location='json', required=True, choices=['waiting', 'ok'])
         parser.add_argument('created_at', location='json', default=qry_topup.created_at)
         args = parser.parse_args()
+        tipe_user = User.query.filter(User.id == qry_topup.id_murid).first()
+
+        if tipe_user.tipe == 'client':
+            qry = Clients.query.filter(Clients.user_id == qry_topup.id_murid).first()
+        if tipe_user.tipe == 'tentor':
+            qry = Tentors.query.filter(Tentors.user_id == qry_topup.id_murid).first()
 
         # Verifikasi Bank
         if qry_topup is not None:
-            qry_topup.id_murid = args['id_murid']
             qry_topup.nominal = args['nominal']
             qry_topup.metode_pembayaran = args['metode_pembayaran']
             if args['status'] == 'ok':
                 # Penjumlahan saldo client
-                qry_client.saldo += args['nominal']
+                qry.saldo += args['nominal']
             qry_topup.status = args['status']
             qry_topup.created_at = args['created_at']
             qry_topup.updated_at = datetime.now()
@@ -140,7 +149,7 @@ class TopupResource(Resource):
     @jwt_required
     def delete(self, id):
         tipe = get_jwt_claims()['tipe']
-        if tipe != "client" or tipe != "admin" or tipe != "bank":
+        if tipe == "client" or tipe == "tentor":
             return {'message':'UNAUTHORIZED'},404, { 'Content-Type': 'application/json' }
         qry_topup = Topups.query.get(id)
         topup = marshal(qry_topup, Topups.respon_fields)

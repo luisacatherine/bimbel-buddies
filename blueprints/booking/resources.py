@@ -29,6 +29,7 @@ class BookingResource(Resource):
             parser.add_argument('id_tentor', type=int, location='args')
             parser.add_argument('id_murid', type=int, location='args')
             parser.add_argument('tanggal', location='args')
+            parser.add_argument('sort_tanggal', location='args', choices=['terbaru', 'terlama'])
             parser.add_argument('status', type=str, location='args', choices=['waiting', 'requested', 'accepted', 'cancelled', 'not_accepted', 'done'])
             parser.add_argument('mapel', type=str, choices=['mat', 'fis', 'kim', 'bio'])
             args = parser.parse_args()
@@ -37,9 +38,10 @@ class BookingResource(Resource):
             
             check_exp = Booking.query.filter_by(status="requested").all()
             for check_exp in check_exp:
-                if (datetime.now()  > check_exp.updated_at + timedelta(hours=1)):
+                if (datetime.now()  > check_exp.updated_at + timedelta(hours=2)):
                     print("---- requested jadi waiting ----",check_exp.updated_at)
                     check_exp.status = "waiting"
+                    check_exp.id_tentor = 0
                     check_exp.updated_at= datetime.now()
                     db.session.commit()
 
@@ -74,6 +76,12 @@ class BookingResource(Resource):
             if args['tanggal'] is not None:
                 # qry = qry.filter_by(tanggal=args['tanggal'])
                 qry = qry.filter(cast(Booking.tanggal, Date) == args['tanggal'])
+
+            if args['sort_tanggal'] is not None:
+                if args['sort_tanggal'] == 'terbaru':
+                    qry = qry.order_by(Booking.tanggal.desc())
+                elif args['sort_tanggal'] == 'terlama':
+                    qry = qry.order_by(Booking.tanggal.asc())
 
             rows = []
             for row in qry.limit(args['rp']).offset(offset).all():
@@ -131,6 +139,7 @@ class BookingResource(Resource):
                 return {'status': 'gagal', 'message': 'Pemesanan hanya bisa dilakukan 7 hari sebelum tanggal les.'}
             qry.tanggal = args['tanggal']
             qry.status = 'waiting'
+            qry.id_tentor = 0
 
             # Delete jadwal tentor
             qry_jadwal = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
@@ -152,6 +161,20 @@ class BookingResource(Resource):
 
             if args['status'] == 'requested':
                 qry.id_tentor = args['id_tentor']
+                # Hitung jarak antara tentor dan murid
+                resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
+                resp = resp.json()
+                jarak = resp['rows'][0]['elements'][0]['distance']['text']
+                angka = re.findall(r'([1-9]|\.)', jarak)
+                angka = float(''.join(angka))
+                satuan = re.findall(r'([a-z])', jarak)
+                satuan = ''.join(satuan)
+                if satuan == 'mi':
+                    angka = angka * 1609 / 1000
+                if satuan == 'ft':
+                    angka = angka * 3048 / 10000
+                jarak_tentor = float("{0:.2f}".format(angka))
+                qry.jarak = jarak_tentor
 
             elif args['status'] == 'waiting':
                 qry.id_tentor = 0
@@ -183,31 +206,31 @@ class BookingResource(Resource):
                 qry.saldo_admin += (qry.harga_bensin + qry.harga_booking)
 
                 # Tambah jadwal tentor
-                # new_schedule = Jadwaltentor(None, murid.id, tentor.id, qry.id_booking, qry.tanggal, qry.tanggal + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
-                # db.session.add(new_schedule)
-                # qry.status = args['status']
-                # db.session.commit()
-                # temp=marshal(qry, Booking.response_fields)
-                # temp["jarak"]=jarak_tentor
-                # return {'status': 'oke', 'booking': temp}, 200, {'Content-Type': 'application/json'}
-            elif args['status'] == 'cancelled':
-                qry_tentor = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
-                db.session.delete(qry_tentor)
+                new_schedule = Jadwaltentor(None, murid.id, tentor.id, qry.id_booking, qry.tanggal, qry.tanggal + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
+                db.session.add(new_schedule)
+                qry.status = args['status']
                 db.session.commit()
-
+                temp=marshal(qry, Booking.response_fields)
+                temp["jarak"]=jarak_tentor
+                return {'status': 'oke', 'booking': temp}, 200, {'Content-Type': 'application/json'}
+            elif args['status'] == 'cancelled':
+                if qry.status == 'accepted':
+                    qry_tentor = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
+                    db.session.delete(qry_tentor)
+                    db.session.commit()
                 qry_client = Jadwalclient.query.filter(Jadwalclient.booking_id == id_booking).first()
                 db.session.delete(qry_client)
                 db.session.commit()
 
                 # Kalau masih j-6
                 if datetime.now() + timedelta(hours=6) < qry.tanggal:
-                    if qr.status == 'requested':
+                    if qry.status == 'requested':
                         murid.saldo += (qry.harga_booking + qry.harga_bensin)
                         qry.saldo_admin = 0
                         qry.harga_booking = 0
                         qry.harga_bensin = 0
                     
-                    elif qr.status == 'accepted':
+                    elif qry.status == 'accepted':
                         murid.saldo += (qry.harga_booking + qry.harga_bensin)
                         qry.saldo_admin -= (qry.harga_booking + qry.harga_bensin)
                         qry.harga_booking = 0
@@ -229,12 +252,14 @@ class BookingResource(Resource):
                         qry.harga_booking = 0
                         qry.harga_bensin = 0
 
-            
             elif args['status'] == 'done':
-                qry.saldo_tentor = 0.8 * qry.harga_booking + qry.harga_bensin
-                # return qry.saldo_tentor
-                tentor.saldo += qry.saldo_tentor
-                qry.saldo_admin -= (0.8 * qry.harga_booking + qry.harga_bensin)
+                if datetime.now() > qry.tanggal + timedelta(hours=1.5): 
+                    qry.saldo_tentor = 0.8 * qry.harga_booking + qry.harga_bensin
+                    # return qry.saldo_tentor
+                    tentor.saldo += qry.saldo_tentor
+                    qry.saldo_admin -= (0.8 * qry.harga_booking + qry.harga_bensin)
+                else:
+                    return {'status': 'gagal', 'message': 'Belum Waktunya'}
             qry.status = args['status']
         qry.updated_at= datetime.now()
             # return qry.id_tentor
