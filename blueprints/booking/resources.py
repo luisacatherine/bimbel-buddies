@@ -206,13 +206,13 @@ class BookingResource(Resource):
                 qry.saldo_admin += (qry.harga_bensin + qry.harga_booking)
 
                 # Tambah jadwal tentor
-                # new_schedule = Jadwaltentor(None, murid.id, tentor.id, qry.id_booking, qry.tanggal, qry.tanggal + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
-                # db.session.add(new_schedule)
-                # qry.status = args['status']
-                # db.session.commit()
-                # temp=marshal(qry, Booking.response_fields)
-                # temp["jarak"]=jarak_tentor
-                # return {'status': 'oke', 'booking': temp}, 200, {'Content-Type': 'application/json'}
+                new_schedule = Jadwaltentor(None, murid.id, tentor.id, qry.id_booking, qry.tanggal, qry.tanggal + timedelta(hours=1.5), 'waiting', datetime.now(), datetime.now())
+                db.session.add(new_schedule)
+                qry.status = args['status']
+                db.session.commit()
+                temp=marshal(qry, Booking.response_fields)
+                temp["jarak"]=jarak_tentor
+                return {'status': 'oke', 'booking': temp}, 200, {'Content-Type': 'application/json'}
             elif args['status'] == 'cancelled':
                 if qry.status == 'accepted':
                     qry_tentor = Jadwaltentor.query.filter(Jadwaltentor.booking_id == id_booking).first()
@@ -224,13 +224,13 @@ class BookingResource(Resource):
 
                 # Kalau masih j-6
                 if datetime.now() + timedelta(hours=6) < qry.tanggal:
-                    if qr.status == 'requested':
+                    if qry.status == 'requested':
                         murid.saldo += (qry.harga_booking + qry.harga_bensin)
                         qry.saldo_admin = 0
                         qry.harga_booking = 0
                         qry.harga_bensin = 0
                     
-                    elif qr.status == 'accepted':
+                    elif qry.status == 'accepted':
                         murid.saldo += (qry.harga_booking + qry.harga_bensin)
                         qry.saldo_admin -= (qry.harga_booking + qry.harga_bensin)
                         qry.harga_booking = 0
@@ -252,12 +252,14 @@ class BookingResource(Resource):
                         qry.harga_booking = 0
                         qry.harga_bensin = 0
 
-            
             elif args['status'] == 'done':
-                qry.saldo_tentor = 0.8 * qry.harga_booking + qry.harga_bensin
-                # return qry.saldo_tentor
-                tentor.saldo += qry.saldo_tentor
-                qry.saldo_admin -= (0.8 * qry.harga_booking + qry.harga_bensin)
+                if datetime.now() > qry.tanggal + timedelta(hours=1.5): 
+                    qry.saldo_tentor = 0.8 * qry.harga_booking + qry.harga_bensin
+                    # return qry.saldo_tentor
+                    tentor.saldo += qry.saldo_tentor
+                    qry.saldo_admin -= (0.8 * qry.harga_booking + qry.harga_bensin)
+                else:
+                    return {'status': 'gagal', 'message': 'Belum Waktunya'}
             qry.status = args['status']
         qry.updated_at= datetime.now()
             # return qry.id_tentor
