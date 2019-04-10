@@ -191,7 +191,6 @@ class TentorResource(Resource):
                                 angka = angka * 3048 / 10000
                             if angka <= args['jarak']:
                                 distance.append(tentor.id)
-                                listjarak.append(angka)
                                 tentor.jarak = float("{0:.2f}".format(angka))
                                 rows.append(marshal(tentor, Tentors.respon_jarak))
                         return {'status': 'oke', 'tentors': rows}, 200, {'Content-Type': 'application/json'}
