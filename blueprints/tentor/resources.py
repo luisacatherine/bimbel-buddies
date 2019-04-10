@@ -163,7 +163,7 @@ class TentorResource(Resource):
                         return {'status': 'UNAUTHORIZED'}, 401, { 'Content-Type': 'application/json' }
                     else:
                         murid = Clients.query.filter(Clients.user_id == jwtClaims['id']).first()
-                        tentors = Tentors.query
+                        # tentors = Tentors.query
                         
                         if args['sortby'] == 'rating':
                             qry = qry.order_by(Tentors.rating.desc())
@@ -176,7 +176,8 @@ class TentorResource(Resource):
 
                         distance = []
                         listjarak = []
-                        for tentor in tentors:
+                        rows = []
+                        for tentor in qry:
                             resp = requests.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + tentor.address + "&destinations=" + murid.address + "&key=AIzaSyAC0QSYGS_Ii3d0mdCjdIOXN9u0nQmYQyg")
                             resp = resp.json()
                             jarak = resp['rows'][0]['elements'][0]['distance']['text']
@@ -188,21 +189,11 @@ class TentorResource(Resource):
                                 angka = angka * 1609 / 1000
                             if satuan == 'ft':
                                 angka = angka * 3048 / 10000
-                            if angka > args['jarak']:
+                            if angka <= args['jarak']:
                                 distance.append(tentor.id)
-                            else:
                                 listjarak.append(angka)
-                        qry = qry.filter(Tentors.id.notin_(distance))
-                        print("ini jarak",listjarak)
-                        rows = []
-                        i=0
-                        for row in qry.limit(args['rp']).offset(offset).all():
-                            temp = marshal(row, Tentors.respon_fields)
-                            user = User.query.get(row.user_id)
-                            temp['user'] = marshal(user, User.respon_fields)
-                            temp['jarak'] = float("{0:.2f}".format(listjarak[i]))
-                            i+=1
-                            rows.append(temp)            
+                                tentor.jarak = float("{0:.2f}".format(angka))
+                                rows.append(marshal(tentor, Tentors.respon_jarak))
                         return {'status': 'oke', 'tentors': rows}, 200, {'Content-Type': 'application/json'}
                 
                 if args['sortby'] == 'rating':

@@ -22,7 +22,7 @@ class ReviewResources(Resource):
     @jwt_required
     def get(self):
         status = get_jwt_claims()['tipe']
-        if status == "admin" or status == 'tentor':
+        if status == "admin" or status == 'tentor' or status == 'client':
             parser = reqparse.RequestParser()
             parser.add_argument('p',type=int, location='args', default=1)
             parser.add_argument('rp',type=int, location='args', default=5)
@@ -62,7 +62,10 @@ class ReviewResources(Resource):
 
             rows = []
             for row in qry_review.limit(args['rp']).offset(offset).all():
-                rows.append(marshal(row, Reviews.respon_fields))
+                murid = Clients.query.filter(Clients.id == row.id_murid).first()
+                temp = marshal(row, Reviews.respon_fields)
+                temp['murid']= marshal(murid, Clients.respon_fields)
+                rows.append(temp)
 
             return {'status': 'OK','message':"success",'data_review': rows}, 200, { 'Content-Type': 'application/json' }
         else :

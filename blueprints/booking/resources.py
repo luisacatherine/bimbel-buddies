@@ -25,7 +25,7 @@ class BookingResource(Resource):
         if (id_booking == None):
             parser = reqparse.RequestParser()
             parser.add_argument('p', type=int, location='args', default=1)
-            parser.add_argument('rp', type=int, location='args', default=100)
+            parser.add_argument('rp', type=int, location='args', default=10)
             parser.add_argument('id_tentor', type=int, location='args')
             parser.add_argument('id_murid', type=int, location='args')
             parser.add_argument('tanggal', location='args')

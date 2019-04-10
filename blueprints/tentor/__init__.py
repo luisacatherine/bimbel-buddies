@@ -63,6 +63,33 @@ class Tentors(db.Model):
         'updated_at' : fields.DateTime
     }
 
+    respon_jarak = {
+        'id': fields.Integer,
+        'user_id': fields.Integer,
+        'nama' : fields.String,
+        'address' : fields.String,
+        'ktp' : fields.String,
+        'phone' : fields.String,
+        'image' : fields.String,
+        'tgl_lahir' : fields.DateTime,
+        'gender' : fields.String,
+        'fokus' : fields.String,
+        'tingkat' : fields.String,
+        'pendidikan' : fields.String,
+        'ket' : fields.String,
+        'rekening' : fields.String,
+        'pemilik_nasabah' : fields.String,
+        'saldo': fields.Integer,
+        'rating' : fields.Float,
+        'qty_rating': fields.Integer,
+        'lat' : fields.Float,
+        'lon' : fields.Float,
+        'jarak' : fields.Float,
+        'status' : fields.String,
+        'created_at' : fields.DateTime,
+        'updated_at' : fields.DateTime
+    }
+
     def __init__(self,id,user_id,nama,address,ktp,phone,image,tgl_lahir,gender,fokus,tingkat,
         pendidikan,ket,rekening,pemilik_nasabah,saldo,rating,qty_rating,lat,
         lon,status,created_at,updated_at):
